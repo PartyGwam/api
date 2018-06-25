@@ -1,4 +1,5 @@
 import os
+from pg_rest_api.settings import BASE_DIR
 
 DEBUG = True
 ALLOWED_HOSTS = ['*']

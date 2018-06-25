@@ -8,6 +8,12 @@ class Notification(models.Model):
         verbose_name='푸시 알림을 보낼 유저'
     )
     text = models.CharField(max_length=100, verbose_name='알림 내용')
+    slug = models.SlugField(
+        max_length=20,
+        default=None,  # TODO 자동생성 메소드 추가
+        allow_unicode=True,
+        verbose_name='알림 라벨',
+    )
     is_read = models.BooleanField(default=False, verbose_name='읽었는지 여부')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='알림 생성 시간')
 
