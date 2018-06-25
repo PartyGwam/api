@@ -4,7 +4,7 @@ from split_settings.tools import include
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-SECRET_KEY = '3_!r$^(-g#jq4)nw(xrp@_1-=vj*1_y!k+)w$x#%8yoe2td90z'
+SECRET_KEY = os.environ['PG_SECRET_KEY']
 
 ENV = os.environ.get('PROJECT_ENV', 'development')
 
