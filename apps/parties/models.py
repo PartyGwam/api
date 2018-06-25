@@ -2,28 +2,32 @@ from django.db import models
 
 
 class Party(models.Model):
-    title = models.CharField(
+    title = models.CharField(max_length=25, verbose_name='파티 제목')
+    slug = models.SlugField(
+        default=None,  # TODO 자동생성 메소드 추가
         max_length=25,
-        null=False,
-        blank=False,
-        verbose_name='파티 제목'
+        allow_unicode=True,
+        verbose_name='파티 라벨'
     )
     party_owner = models.ForeignKey(
         'profiles.Profile',
         on_delete=models.PROTECT,
         editable=False,
+        related_name='owner',
         verbose_name='파티 주최자'
     )
-    place = models.CharField(
-        max_length=25,
-        null=False,
-        blank=False,
-        verbose_name='파티 장소'
-    )
+    place = models.CharField(max_length=25, verbose_name='파티 장소')
     description = models.TextField(
         null=True,
         blank=True,
         verbose_name='파티 설명'
+    )
+    participants = models.ManyToManyField(
+        'profiles.Profile',
+        limit_choices_to={'is_active', True},
+        related_name='participants',
+        db_table='participants',
+        verbose_name='파티 참가자'
     )
     start_time = models.DateTimeField(null=False, verbose_name='파티 시작 시간')
     current_people = models.PositiveSmallIntegerField(verbose_name='현재 참여 인원')
