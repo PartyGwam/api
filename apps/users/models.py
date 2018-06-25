@@ -4,7 +4,28 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 
 
 class UserManager(BaseUserManager):
-    pass
+    def _create_user(self, email, password=None, **kwargs):
+        if not email:
+            raise ValueError('이메일은 필수 항목입니다')
+
+        # TODO 비밀번호 검증 추가
+
+        user = self.model(
+            email=self.normalize_email(email),
+            password=password,
+            **kwargs
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password, **kwargs):
+        kwargs.setdefault('is_admin', False)
+        return self._create_user(email, password, **kwargs)
+
+    def create_superuser(self, email, password, **kwargs):
+        kwargs.setdefault('is_admin', True)
+        return self._create_user(email, password, **kwargs)
 
 
 class User(AbstractBaseUser):
@@ -28,16 +49,19 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
-    # objects = UserManager()
+
+    objects = UserManager()
 
     class Meta:
         db_table = 'users'
         verbose_name = '유저'
         verbose_name_plural = '유저들'
 
-    def save(self, *args, **kwargs):
-        self.set_password(self.password)
-        super().save(*args, **kwargs)
+    def __repr__(self):
+        return '{} : {}'.format(self.username, self.email)
+
+    def __str__(self):
+        return '{} : {}'.format(self.username, self.email)
 
     @property
     def is_staff(self):
