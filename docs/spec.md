@@ -136,6 +136,6 @@
 
 ## 문의 API
 
-### POST `/complain`
+### POST `/complains`
 
 문의 등록
