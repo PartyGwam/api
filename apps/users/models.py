@@ -1,9 +1,11 @@
 import uuid
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from apps.profiles.models import ProfileManager
 
 
 class UserManager(BaseUserManager):
+    @transaction.atomic
     def _create_user(self, email, password=None, **kwargs):
         if not email:
             raise ValueError('이메일은 필수 항목입니다')
@@ -17,6 +19,12 @@ class UserManager(BaseUserManager):
         )
         user.set_password(password)
         user.save(using=self._db)
+
+        self.model.profiles.create_profile(
+            user=user,
+            username=user.username
+        )
+
         return user
 
     def create_user(self, email, password, **kwargs):
@@ -51,6 +59,7 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ['username']
 
     objects = UserManager()
+    profiles = ProfileManager()
 
     class Meta:
         db_table = 'users'
