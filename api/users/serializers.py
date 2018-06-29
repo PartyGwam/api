@@ -60,3 +60,15 @@ class UserCreateSerializer(serializers.ModelSerializer):
             **validated_data
         )
         return instance
+
+
+class EmailValidateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email']
+
+
+class UsernameValidateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username']
