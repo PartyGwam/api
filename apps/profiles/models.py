@@ -6,16 +6,15 @@ from django.db import models
 class ProfileManager(models.Manager):
     def create_profile(self, user, username, **kwargs):
         if not user:
-            raise ValueError('프로필은 user 가 있는 상태에서만 생성 가능합니다.')
+            raise ValueError('프로필은 회원가입이 되어 있는 상태에서만 생성 가능합니다')
         if not username:
-            raise ValueError('닉네임은 필수입니다.')
+            raise ValueError('닉네임은 필수입니다')
 
         profile = Profile(
             user=user,
             username=username,
             **kwargs
         )
-
         profile.save(using=self._db)
         return profile
 
