@@ -16,7 +16,7 @@ class PartyAPIView(generics.ListCreateAPIView):
     ## **인증**
     `Authorization: PG <token>` 헤더를 추가해야 합니다.
 
-    ## `GET`
+    ## `GET` - **파티 전체 조회**
     모든 파티를 조회할 수 있습니다.
 
     ### search
@@ -30,7 +30,7 @@ class PartyAPIView(generics.ListCreateAPIView):
     - 200 : 파티 정보들을 가져오는데 성공
     - 401 : 인증 데이터가 없음
 
-    ## `POST`
+    ## `POST` - **파티 생성**
     현재 로그인한 유저(인증 토큰으로 인식) 를 파티 주최자로 한 파티를 생성합니다.
 
     ### Required Fields
