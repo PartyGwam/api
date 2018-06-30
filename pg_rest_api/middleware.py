@@ -116,8 +116,7 @@ class LoggingMiddleware:
 
     def _log_request_header(self, request):
         headers = {
-            'Content-Type': request.META['CONTENT_TYPE'],
-            'Authorization': None
+            'Content-Type': request.content_type
         }
         if 'HTTP_AUTHORIZATION' in request.META:
             headers['Authorization'] = request.META['HTTP_AUTHORIZATION']
