@@ -49,7 +49,12 @@ class Profile(models.Model):
     )
     is_active = models.BooleanField(default=True, verbose_name='활성화 여부')
 
+    objects = ProfileManager()
+
     class Meta:
         db_table = 'profiles'
         verbose_name = '프로필'
         verbose_name_plural = '프로필들'
+
+    def __str__(self):
+        return '{} 의 프로필'.format(self.user)

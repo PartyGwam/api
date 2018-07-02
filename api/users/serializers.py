@@ -69,3 +69,15 @@ class UserPasswordSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         password = validated_data.pop('password')
         return User.objects.update_password(instance, password)
+
+      
+class EmailValidateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email']
+
+
+class UsernameValidateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username']
