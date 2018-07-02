@@ -60,3 +60,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
             **validated_data
         )
         return instance
+
+class UserPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['password']
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password')
+        return User.objects.update_password(instance, password)
