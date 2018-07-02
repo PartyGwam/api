@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from api.users.permissions import IsAuthenticatedOrRegistering
 from api.users.serializers import \
-    LoginSerializer, UserSerializer, UserCreateSerializer, \
+    LoginSerializer, UserSerializer, UserCreateSerializer, UserPasswordSerializer \
     EmailValidateSerializer, UsernameValidateSerializer
 from apps.users.models import User
 
@@ -95,6 +95,27 @@ class UserAPIView(generics.ListCreateAPIView):
             data=user_data,
             status=status.HTTP_201_CREATED
         )
+
+class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return UserSerializer
+        else:
+            return UserPasswordSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance=instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        User.objects.deactivate(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class EmailValidateAPIView(generics.GenericAPIView):
