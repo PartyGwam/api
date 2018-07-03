@@ -35,6 +35,31 @@ class UserManager(BaseUserManager):
         kwargs.setdefault('is_admin', True)
         return self._create_user(email, password, **kwargs)
 
+    def update_password(self, instance, new_password):
+        if not new_password:
+            raise ValueError('비밀번호는 필수입니다.')
+
+        instance.password = new_password
+        instance.set_password(new_password)
+        instance.save()
+        return instance
+
+    @transaction.atomic
+    def deactivate_user(self, user):
+        if user.is_active:
+            user.is_active = False
+            user.profile.is_active = False
+            user.save()
+            user.profile.save()
+
+    @transaction.atomic
+    def reactivate_user(self, user):
+        if not user.is_active:
+            user.is_active = True
+            user.profile.is_active = True
+            user.save()
+            user.profile.save()
+
 
 class User(AbstractBaseUser):
     uuid = models.UUIDField(
@@ -77,7 +102,7 @@ class User(AbstractBaseUser):
         return self.is_admin
 
     def has_perm(self, perm, obj=None):
-        return True
+        return self.is_active
 
     def has_module_perms(self, app_label):
-        return True
+        return self.is_active
