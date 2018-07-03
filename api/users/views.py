@@ -1,9 +1,9 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from api.users.permissions import IsAuthenticatedOrRegistering, IsMyself
+from api.users.permissions import UserAPIPermission
 from api.users.serializers import \
     LoginSerializer, UserSerializer, UserCreateSerializer, \
     UserEmailSerializer, UserUsernameSerializer, UserPasswordSerializer, \
@@ -47,39 +47,18 @@ class LoginAPIView(generics.GenericAPIView):
         })
 
 
-class UserAPIView(generics.ListCreateAPIView):
-    """
-    유저 전체 조회 및 회원가입 API
-
-    ## `GET` - **유저 전체 조회**
-
-    ### **인증**
-    `Authorization: PG <token>` 헤더를 추가해야 합니다.
-
-    ### 응답 코드
-    - 200 : 유저 전체 조회 성공
-    - 401 : 인증 데이터가 없음
-
-    ## `POST` - **회원가입**
-
-    ### Required Fields
-    - `email` : 이메일
-    - `username` : 닉네임
-    - `password` : 비밀번호
-
-    ### 응답 코드
-    - 201 : 회원가입 성공. 응답에 토큰과 함께 반환
-    - 400 : 회원가입 실패. 응답에 실패 사유 반환
-
-    """
-    queryset = User.objects.all()
-    permission_classes = [IsAuthenticatedOrRegistering]
+class UserAPIViewset(viewsets.ModelViewSet):
+    SERIALIZERS = {
+        "GET": UserSerializer,
+        "POST": UserCreateSerializer,
+        "PUT": UserPasswordSerializer,
+        "PATCH": UserPasswordSerializer,
+    }
+    queryset = User.objects.filter(is_active=True)
+    permission_classes = [UserAPIPermission]
 
     def get_serializer_class(self):
-        if self.request.method == 'GET':
-            return UserSerializer
-        else:
-            return UserCreateSerializer
+        return self.SERIALIZERS[self.request.method]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -89,69 +68,12 @@ class UserAPIView(generics.ListCreateAPIView):
 
         user_data = serializer.data
         del user_data['password']
-        return user_data, token.key
-
-    def post(self, request, *args, **kwargs):
-        user_data, token = self.create(request, *args, **kwargs)
-        user_data['token'] = token
+        user_data['token'] = token.key
 
         return Response(
             data=user_data,
             status=status.HTTP_201_CREATED
         )
-
-
-class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    유저 상세 정보 조회 / 비밀번호 변경 / 비활성화 API
-
-    ## **인증**
-    `Authorization: PG <token>` 헤더를 추가해야 합니다.
-
-    ## `GET` - **유저 상세 조회**
-
-    ### 응답 코드
-    - 200 : 유저 상세 조회 성공
-    - 401 : 인증 데이터 없음
-
-    ## `PUT` - **비밀번호 변경**
-
-    ### Required Fields
-    - `password` : 새 비밀번호
-
-    ### 응답 코드
-    - 204 : 비밀번호 변경 성공
-    - 400 : 비밀번호 변경 실패. 비밀번호가 유효하지 않은 경우.
-    - 401 : 인증 데이터 없음
-    - 403 : 변경 권한 없음. 다른 유저의 비밀번호를 변경하려 하는 경우.
-
-    ## `DELETE` - **유저 비활성화**
-
-    ### 응답 코드
-    - 204 : 비활성화 성공
-    - 401 : 인증 데이터 없음
-    - 403 : 비활성화 권한 없음. 다른 유저를 비활성화 시도하는 경우.
-    """
-    queryset = User.objects.all()
-    permission_classes = [IsMyself]
-
-    def get_serializer_class(self):
-        if self.request.method == 'GET':
-            return UserSerializer
-        else:
-            return UserPasswordSerializer
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance=instance, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        User.objects.deactivate_user(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class EmailValidateAPIView(generics.GenericAPIView):

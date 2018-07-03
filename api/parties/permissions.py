@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class IsCurrentUserEqualsPartyOwner(permissions.IsAuthenticated):
+class PartyAPIPermission(permissions.IsAuthenticated):
     def has_object_permission(self, request, view, obj):
         if request.method != 'GET':
             has_permission = obj.party_owner == request.user.profile
