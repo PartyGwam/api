@@ -1,9 +1,9 @@
 from django.urls import path
-from api.profiles.views import ProfilesListAPIView, ProfilesDetailAPIView
+from api.profiles.views import ProfileListAPIView, ProfileDetailAPIView
 
 app_name = 'profiles'
 
 urlpatterns = [
-    path('', ProfilesListAPIView.as_view()),
-    path('<uuid:pk>/', ProfilesDetailAPIView.as_view()),
+    path('', ProfileListAPIView.as_view()),
+    path('<uuid:pk>/', ProfileDetailAPIView.as_view()),
 ]

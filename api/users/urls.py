@@ -1,4 +1,5 @@
 from django.urls import path
+from api.users.views import LoginAPIView, UserAPIView, UserDetailAPIView
 from api.users.views import \
     LoginAPIView, UserAPIView, UserDetailAPIView, \
     EmailValidateAPIView, UsernameValidateAPIView, ForgotPasswordAPIView
