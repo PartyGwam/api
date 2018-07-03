@@ -1,4 +1,5 @@
 from rest_framework import generics, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 
@@ -64,12 +65,11 @@ class PartyAPIView(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return serializer.data
-
-    def post(self, request, *args, **kwargs):
-        data = self.create(request, *args, **kwargs)
-        return Response(data, status=status.HTTP_201_CREATED)
+        try:
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            raise ValidationError(detail=str(e))
 
 
 class PartyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -108,6 +108,7 @@ class PartyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     - 403 : 삭제 권한 없음 (파티 주최자로 로그인 되지 않은 경우 혹은 파티원이 존재하여 삭제가 불가능한 경우)
     """
     queryset = Party.objects.all()
+    lookup_field = 'slug'
     permission_classes = [IsCurrentUserEqualsPartyOwner]
 
     def get_serializer_class(self):
@@ -121,11 +122,4 @@ class PartyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-        return serializer.data
-
-    def put(self, request, *args, **kwargs):
-        data = self.update(request, *args, **kwargs)
-        return Response(data)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+        return Response(serializer.data)
