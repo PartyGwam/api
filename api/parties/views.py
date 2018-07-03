@@ -1,10 +1,10 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 
 from api.parties.pagination import PartyAPIPagination
-from api.parties.permissions import IsCurrentUserEqualsPartyOwner
+from api.parties.permissions import PartyAPIPermission
 from api.parties.serializers import \
     PartySerializer, PartyCreateSerializer, PartyUpdateSerializer
 from apps.parties.models import Party
@@ -72,6 +72,43 @@ class PartyAPIView(generics.ListCreateAPIView):
             raise ValidationError(detail=str(e))
 
 
+class PartyAPIViewset(viewsets.ModelViewSet):
+    queryset = Party.objects.all()
+    lookup_field = "slug"
+    pagination_class = PartyAPIPagination
+    permission_classes = [PartyAPIPermission]
+
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['title']
+    ordering_fields = ['start_time', 'created_at']
+
+    SERIALIZER = {
+        'GET': PartySerializer,
+        "POST": PartyCreateSerializer,
+        "PUT": PartyUpdateSerializer,
+        "PATCH": PartyUpdateSerializer,
+    }
+
+    def get_serializer_class(self):
+        return self.SERIALIZER[self.request.method]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            raise ValidationError(detail=str(e))
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+
 class PartyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
     파티 상세 조회 / 수정 / 삭제 API
@@ -109,7 +146,7 @@ class PartyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Party.objects.all()
     lookup_field = 'slug'
-    permission_classes = [IsCurrentUserEqualsPartyOwner]
+    permission_classes = []
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
