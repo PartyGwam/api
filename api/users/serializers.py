@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.compat import authenticate
+
 from apps.users.models import User
 
 
@@ -23,10 +24,6 @@ class LoginSerializer(serializers.Serializer):
                 email=email,
                 password=password
             )
-
-            # The authenticate call simply returns None for is_active=False
-            # users. (Assuming the default ModelBackend authentication
-            # backend.)
             if not user:
                 msg = '이메일 혹은 비밀번호가 잘못되었습니다.'
                 raise serializers.ValidationError(msg, code='authorization')
@@ -62,13 +59,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return instance
 
 
-class EmailValidateSerializer(serializers.ModelSerializer):
+class UserPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email']
+        fields = ['password']
 
-
-class UsernameValidateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username']
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password')
+        return User.objects.update_password(instance, password)
