@@ -1,12 +1,15 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from api.parties.views import PartyAPIViewset
-from api.parties.participants.views import ParticipantsAPIViewset
+from api.parties.views import PartyAPIViewSet
 
 app_name = 'parties'
 
 urlpatterns = [
+    path(
+        '<str:slug>/participants/',
+        include('api.parties.participants.urls', namespace='participants')
+    ),
     path(
         '<str:slug>/owner/',
         include('api.parties.owner.urls', namespace='owner')
@@ -18,7 +21,6 @@ urlpatterns = [
 ]
 
 router = routers.SimpleRouter()
-router.register('', PartyAPIViewset)
-router.register('<str:slug>/participants', ParticipantsAPIViewset)
+router.register('', PartyAPIViewSet)
 
 urlpatterns += router.urls

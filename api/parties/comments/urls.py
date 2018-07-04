@@ -1,9 +1,10 @@
-from django.urls import path
-from api.parties.comments.views import CommentAPIView, CommentDetailAPIView
+from rest_framework.routers import SimpleRouter
+
+from api.parties.comments.views import CommentAPIViewSet
 
 app_name = 'comments'
 
-urlpatterns = [
-    path('', CommentAPIView.as_view()),
-    path('<str:slug>/', CommentDetailAPIView.as_view()),
-]
+router = SimpleRouter()
+router.register('', CommentAPIViewSet)
+
+urlpatterns = router.urls
