@@ -1,6 +1,6 @@
 import uuid
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 
 
 class ProfileManager(models.Manager):
@@ -17,6 +17,19 @@ class ProfileManager(models.Manager):
         )
         profile.save(using=self._db)
         return profile
+
+    @transaction.atomic
+    def update_username(self, instance, username):
+        instance.username = username
+        instance.user.username = username
+        instance.save()
+        instance.user.save()
+        return instance
+
+    def update_profile_picture(self, instance, profile_picture):
+        instance.profile_picture = profile_picture
+        instance.save()
+        return instance
 
 
 class Profile(models.Model):
