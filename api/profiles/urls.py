@@ -1,7 +1,10 @@
-from django.urls import path, include
+from rest_framework.routers import SimpleRouter
+
+from api.profiles.views import ProfileAPIViewSet
 
 app_name = 'profiles'
 
-urlpatterns = [
+router = SimpleRouter()
+router.register('', ProfileAPIViewSet)
 
-]
+urlpatterns = router.urls
