@@ -18,12 +18,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Profile',
             fields=[
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True, verbose_name='프로필 pk')),
-                ('username', models.CharField(max_length=8, unique=True, verbose_name='닉네임')),
-                ('profile_picture', models.FileField(null=True, upload_to='assets/images/', verbose_name='프로필 사진')),
-                ('is_receiving_notification', models.BooleanField(default=True, verbose_name='푸시 알림 받는지 여부')),
-                ('is_active', models.BooleanField(default=True, verbose_name='활성화 여부')),
-                ('user', models.OneToOneField(editable=False, on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL, verbose_name='해당 프로필의 유저')),
+                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False,
+                                          primary_key=True, serialize=False, unique=True, verbose_name='프로필 pk')),
+                ('username', models.CharField(
+                    max_length=8, unique=True, verbose_name='닉네임')),
+                ('profile_picture', models.FileField(null=True,
+                                                     upload_to='assets/images/', verbose_name='프로필 사진')),
+                ('is_receiving_notification', models.BooleanField(
+                    default=True, verbose_name='푸시 알림 받는지 여부')),
+                ('is_active', models.BooleanField(
+                    default=True, verbose_name='활성화 여부')),
+                ('user', models.OneToOneField(editable=False, on_delete=django.db.models.deletion.PROTECT,
+                                              to=settings.AUTH_USER_MODEL, verbose_name='해당 프로필의 유저')),
             ],
             options={
                 'verbose_name': '프로필',

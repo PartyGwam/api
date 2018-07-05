@@ -15,15 +15,24 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True, verbose_name='유저 pk')),
-                ('email', models.EmailField(max_length=254, unique=True, verbose_name='이메일')),
-                ('username', models.CharField(max_length=8, unique=True, verbose_name='닉네임')),
-                ('date_joined', models.DateTimeField(auto_now_add=True, verbose_name='가입일')),
-                ('last_logged_in', models.DateTimeField(auto_now=True, verbose_name='마지막 로그인 날짜')),
-                ('is_active', models.BooleanField(default=True, verbose_name='활성화 여부')),
-                ('is_admin', models.BooleanField(default=False, verbose_name='관리자 여부')),
+                ('password', models.CharField(
+                    max_length=128, verbose_name='password')),
+                ('last_login', models.DateTimeField(
+                    blank=True, null=True, verbose_name='last login')),
+                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False,
+                                          primary_key=True, serialize=False, unique=True, verbose_name='유저 pk')),
+                ('email', models.EmailField(
+                    max_length=254, unique=True, verbose_name='이메일')),
+                ('username', models.CharField(
+                    max_length=8, unique=True, verbose_name='닉네임')),
+                ('date_joined', models.DateTimeField(
+                    auto_now_add=True, verbose_name='가입일')),
+                ('last_logged_in', models.DateTimeField(
+                    auto_now=True, verbose_name='마지막 로그인 날짜')),
+                ('is_active', models.BooleanField(
+                    default=True, verbose_name='활성화 여부')),
+                ('is_admin', models.BooleanField(
+                    default=False, verbose_name='관리자 여부')),
             ],
             options={
                 'verbose_name': '유저',
