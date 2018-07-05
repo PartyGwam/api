@@ -17,14 +17,21 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Comment',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('text', models.CharField(max_length=150, verbose_name='댓글 내용')),
-                ('slug', models.SlugField(allow_unicode=True, default=None, max_length=10, verbose_name='댓글 라벨')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='최초 작성된 시간')),
-                ('last_updated', models.DateTimeField(auto_now=True, verbose_name='가장 최근 수정된 시간')),
-                ('is_active', models.BooleanField(default=True, verbose_name='활성화 여부')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='profiles.Profile', verbose_name='댓글 작성자')),
-                ('party', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='parties.Party', verbose_name='댓글이 향하는 파티')),
+                ('slug', models.SlugField(allow_unicode=True,
+                                          default=None, max_length=10, verbose_name='댓글 라벨')),
+                ('created_at', models.DateTimeField(
+                    auto_now_add=True, verbose_name='최초 작성된 시간')),
+                ('last_updated', models.DateTimeField(
+                    auto_now=True, verbose_name='가장 최근 수정된 시간')),
+                ('is_active', models.BooleanField(
+                    default=True, verbose_name='활성화 여부')),
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                             to='profiles.Profile', verbose_name='댓글 작성자')),
+                ('party', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                            to='parties.Party', verbose_name='댓글이 향하는 파티')),
             ],
             options={
                 'verbose_name': '댓글',

@@ -56,7 +56,8 @@ class PartyManager(models.Manager):
 
         if title:
             instance.title = title
-            instance.slug = self._generate_slug(title, instance.party_owner.username)
+            instance.slug = self._generate_slug(
+                title, instance.party_owner.username)
 
         for attr, value in kwargs.items():
             setattr(instance, attr, value)
@@ -117,11 +118,14 @@ class Party(models.Model):
     max_people = models.PositiveSmallIntegerField(verbose_name='최대 참여 가능 인원')
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='생성된 시간')
-    last_updated = models.DateTimeField(auto_now=True, verbose_name='마지막으로 수정된 시간')
+    last_updated = models.DateTimeField(
+        auto_now=True, verbose_name='마지막으로 수정된 시간')
 
     is_new = models.BooleanField(default=True, verbose_name='최근 개설된 파티인지 여부')
-    will_start_soon = models.BooleanField(default=False, verbose_name='곧 시작하는 파티인지 여부')
-    has_started = models.BooleanField(default=False, verbose_name='이미 시작된 파티인지 여부')
+    will_start_soon = models.BooleanField(
+        default=False, verbose_name='곧 시작하는 파티인지 여부')
+    has_started = models.BooleanField(
+        default=False, verbose_name='이미 시작된 파티인지 여부')
     can_join = models.BooleanField(default=True, verbose_name='참여 가능한지 여부')
 
     objects = PartyManager()

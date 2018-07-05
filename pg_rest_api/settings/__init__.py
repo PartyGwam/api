@@ -2,7 +2,8 @@ import os
 import glob
 from split_settings.tools import include
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
 
 SECRET_KEY = os.environ['PG_SECRET_KEY']
 

@@ -13,7 +13,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='party',
             name='slug',
-            field=models.SlugField(allow_unicode=True, default='asdf', max_length=20, verbose_name='파티 라벨'),
+            field=models.SlugField(
+                allow_unicode=True, default='asdf', max_length=20, verbose_name='파티 라벨'),
             preserve_default=False,
         ),
         migrations.AlterField(
