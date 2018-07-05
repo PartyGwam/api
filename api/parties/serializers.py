@@ -6,12 +6,10 @@ from api.profiles.serializers import ProfileUsernamePictureSerializer
 
 class PartySerializer(serializers.ModelSerializer):
     party_owner = ProfileUsernamePictureSerializer(read_only=True)
-    participants = ProfileUsernamePictureSerializer(many=True, read_only=True)
-    comment_set = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Party
-        fields = '__all__'
+        exclude = ['participants']
 
 
 class PartyCreateSerializer(serializers.ModelSerializer):
