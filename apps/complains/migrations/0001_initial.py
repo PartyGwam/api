@@ -16,10 +16,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Complain',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('text', models.TextField(verbose_name='문의 내용')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='문의한 시간')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='profiles.Profile', verbose_name='문의를 작성한 유저')),
+                ('created_at', models.DateTimeField(
+                    auto_now_add=True, verbose_name='문의한 시간')),
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                             to='profiles.Profile', verbose_name='문의를 작성한 유저')),
             ],
             options={
                 'verbose_name': '문의',

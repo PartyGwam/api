@@ -10,8 +10,6 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError('이메일은 필수 항목입니다')
 
-        # TODO 비밀번호 검증 추가
-
         user = self.model(
             email=self.normalize_email(email),
             password=password,
@@ -76,7 +74,8 @@ class User(AbstractBaseUser):
         verbose_name='닉네임'
     )
     date_joined = models.DateTimeField(auto_now_add=True, verbose_name='가입일')
-    last_logged_in = models.DateTimeField(auto_now=True, verbose_name='마지막 로그인 날짜')
+    last_logged_in = models.DateTimeField(
+        auto_now=True, verbose_name='마지막 로그인 날짜')
     is_active = models.BooleanField(default=True, verbose_name='활성화 여부')
     is_admin = models.BooleanField(default=False, verbose_name='관리자 여부')
 

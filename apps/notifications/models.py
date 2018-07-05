@@ -21,7 +21,8 @@ class Notification(models.Model):
     )
     text = models.CharField(max_length=100, verbose_name='알림 내용')
     is_read = models.BooleanField(default=False, verbose_name='읽었는지 여부')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='알림 생성 시간')
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name='알림 생성 시간')
 
     objects = NotificationManager()
 

@@ -1,6 +1,7 @@
 import logging
 import re
 import sys
+
 from rest_framework.status import is_client_error, is_success
 
 
@@ -77,7 +78,8 @@ class LoggingMiddleware:
 
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
-        self.formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+        self.formatter = logging.Formatter(
+            '%(asctime)s [%(levelname)s] %(message)s')
         self.handler = logging.StreamHandler(stream=sys.stdout)
         self.handler.setFormatter(self.formatter)
         self.handler.setLevel(logging.INFO)
@@ -97,7 +99,8 @@ class LoggingMiddleware:
             self._log_request_response_info(request)
             self._log_request_header(request)
             if hasattr(request, 'body'):
-                self.logger.info('BODY: \n{}'.format(request.body.decode('utf-8')))
+                self.logger.info('BODY: \n{}'.format(
+                    request.body.decode('utf-8')))
 
     def process_response(self, request, response):
         path = request.path_info.lstrip('/')

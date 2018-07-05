@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='comment',
             name='slug',
-            field=models.SlugField(allow_unicode=True, max_length=20, verbose_name='댓글 라벨'),
+            field=models.SlugField(
+                allow_unicode=True, max_length=20, verbose_name='댓글 라벨'),
         ),
     ]
