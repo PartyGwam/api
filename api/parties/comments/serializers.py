@@ -13,21 +13,14 @@ class CommentSerializer(serializers.ModelSerializer):
         exclude = ['party', 'is_active']
 
 
-class PartyCommentSerializer(serializers.ModelSerializer):
-    comment_set = CommentSerializer(many=True, read_only=True, label='comments')
-
-    class Meta:
-        model = Party
-        fields = ['title', 'place', 'description', 'comment_set']
-
-
 class CommentWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['text']
 
     def create(self, validated_data):
-        party = self.context['view'].get_object()
+        slug = self.context['request'].path_info.split('/')[3]
+        party = Party.objects.get(slug=slug)
         author = self.context['request'].user.profile
 
         return Comment.objects.create_comment(
