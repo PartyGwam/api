@@ -3,10 +3,8 @@ from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.response import Response
 
 from api.parties.comments.permissions import CommentAPIPermission
-from api.parties.comments.serializers import \
-    CommentSerializer, CommentWriteSerializer, PartyCommentSerializer
+from api.parties.comments.serializers import CommentSerializer, CommentWriteSerializer
 from apps.comments.models import Comment
-from apps.parties.models import Party
 
 
 class CommentAPIViewSet(viewsets.ModelViewSet):
@@ -14,20 +12,9 @@ class CommentAPIViewSet(viewsets.ModelViewSet):
     lookup_field = 'slug'
     permission_classes = [CommentAPIPermission]
 
-    def get_queryset(self):
-        path = self.request.path_info.rstrip('/').split('comments')
-        if path[1]:
-            return Comment.objects.all()
-        else:
-            return Party.objects.all()
-
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            path = self.request.path_info.rstrip('/').split('comments')
-            if path[1]:
-                return CommentSerializer
-            else:
-                return PartyCommentSerializer
+            return CommentSerializer
         else:
             return CommentWriteSerializer
 

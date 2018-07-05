@@ -12,6 +12,7 @@ class CommentManager(models.Manager):
             raise AssertionError('파티에 참여한 사람만 댓글을 작성할 수 있습니다.')
 
         instance = self.model(party=party, author=author, **kwargs)
+        instance.slug = self._generate_slug(kwargs['text'], author.username)
         instance.save(using=self._db)
         return instance
 
@@ -55,3 +56,6 @@ class Comment(models.Model):
         db_table = 'comments'
         verbose_name = '댓글'
         verbose_name_plural = '댓글들'
+
+    def __str__(self):
+        return '{} 에 {} 이 남긴 댓글: {}'.format(self.party, self.author, self.text)
