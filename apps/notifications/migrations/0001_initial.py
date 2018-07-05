@@ -16,12 +16,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Notification',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('text', models.CharField(max_length=100, verbose_name='알림 내용')),
-                ('slug', models.SlugField(allow_unicode=True, default=None, max_length=20, verbose_name='알림 라벨')),
-                ('is_read', models.BooleanField(default=False, verbose_name='읽었는지 여부')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='알림 생성 시간')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='profiles.Profile', verbose_name='푸시 알림을 보낼 유저')),
+                ('slug', models.SlugField(allow_unicode=True,
+                                          default=None, max_length=20, verbose_name='알림 라벨')),
+                ('is_read', models.BooleanField(
+                    default=False, verbose_name='읽었는지 여부')),
+                ('created_at', models.DateTimeField(
+                    auto_now_add=True, verbose_name='알림 생성 시간')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                           to='profiles.Profile', verbose_name='푸시 알림을 보낼 유저')),
             ],
             options={
                 'verbose_name': '알림',

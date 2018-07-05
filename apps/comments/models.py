@@ -46,8 +46,10 @@ class Comment(models.Model):
         allow_unicode=True,
         verbose_name='댓글 라벨'
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='최초 작성된 시간')
-    last_updated = models.DateTimeField(auto_now=True, verbose_name='가장 최근 수정된 시간')
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name='최초 작성된 시간')
+    last_updated = models.DateTimeField(
+        auto_now=True, verbose_name='가장 최근 수정된 시간')
     is_active = models.BooleanField(default=True, verbose_name='활성화 여부')
 
     objects = CommentManager()
