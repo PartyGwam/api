@@ -1,5 +1,6 @@
 from rest_framework import status, viewsets
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 
@@ -46,3 +47,19 @@ class PartyAPIViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+
+
+class JoinedPartyAPIView(ListAPIView):
+    serializer_class = PartySerializer
+    pagination_class = PartyAPIPagination
+
+    def get_queryset(self):
+        return Party.objects.filter(participants=self.request.user.profile)
+
+
+class CreatedPartyAPIView(ListAPIView):
+    serializer_class = PartySerializer
+    pagination_class = PartyAPIPagination
+
+    def get_queryset(self):
+        return Party.objects.filter(party_owner=self.request.user.profile)
