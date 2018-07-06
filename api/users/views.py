@@ -38,11 +38,16 @@ class LoginAPIView(generics.GenericAPIView):
         User.objects.reactivate_user(user)
         token, created = Token.objects.get_or_create(user=user)
 
-        return Response({
+        profile_picture = str(user.profile.profile_picture) if user.profile.profile_picture else None
+        data = {
             'token': token.key,
+            'uuid': user.uuid,
             'email': user.email,
-            'username': user.username
-        })
+            'username': user.username,
+            'profile_picture': profile_picture
+        }
+
+        return Response(data)
 
 
 class UserAPIViewset(viewsets.ModelViewSet):
@@ -68,5 +73,7 @@ class UserAPIViewset(viewsets.ModelViewSet):
         user_data = serializer.data
         del user_data['password']
         user_data['token'] = token.key
+        user_data['uuid'] = user.uuid
+        user_data['profile_picture'] = str(user.profile.profile_picture) if user.profile.profile_picture else None
 
         return Response(user_data, status=status.HTTP_201_CREATED)

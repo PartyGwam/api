@@ -105,7 +105,6 @@ class Party(models.Model):
     )
     participants = models.ManyToManyField(
         'profiles.Profile',
-        limit_choices_to={'is_active', True},
         related_name='participants',
         db_table='participants',
         verbose_name='파티 참가자'

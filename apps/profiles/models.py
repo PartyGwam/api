@@ -51,9 +51,10 @@ class Profile(models.Model):
         unique=True,
         verbose_name='닉네임'
     )
-    profile_picture = models.FileField(
+    profile_picture = models.ImageField(
         upload_to='assets/images/',
         null=True,
+        default=None,
         verbose_name='프로필 사진',
     )
     is_receiving_notification = models.BooleanField(
