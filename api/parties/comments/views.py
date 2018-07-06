@@ -11,6 +11,7 @@ class CommentAPIViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     lookup_field = 'slug'
     permission_classes = [CommentAPIPermission]
+    pagination_class = None
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
