@@ -11,7 +11,7 @@ class PartyManager(models.Manager):
         if kwargs['max_people'] < 2:
             raise ValueError('참여 가능 인원은 2명 이상이어야 합니다.')
 
-        today = timezone.now()
+        today = timezone.localtime()
         date_difference = (kwargs['start_time'] - today).days
         if date_difference < 0:
             raise ValueError('현재 시각 이전에 시작하는 파티를 주최할 수 없습니다.')
@@ -24,7 +24,6 @@ class PartyManager(models.Manager):
             **kwargs
         )
         instance.save(using=self._db)
-
         instance.participants.add(owner)
         instance.save(using=self._db)
 
@@ -32,13 +31,13 @@ class PartyManager(models.Manager):
 
     @transaction.atomic
     def update_party(self, instance,
-                     title=None, start_time=None, max_people=None,
-                     **kwargs):
+                     title=None, start_time=None,
+                     max_people=None, **kwargs):
         if not instance:
             raise ValueError('업데이트 할 모델은 필수입니다.')
 
         if start_time:
-            today = timezone.now()
+            today = timezone.localtime()
             date_difference = (start_time - today).days
             if date_difference < 0:
                 raise ValueError('파티의 시작 시간을 현재 시각보다 빠르게 설정할 수 없습니다.')
@@ -56,8 +55,7 @@ class PartyManager(models.Manager):
 
         if title:
             instance.title = title
-            instance.slug = self._generate_slug(
-                title, instance.party_owner.username)
+            instance.slug = self._generate_slug(title, instance.party_owner.username)
 
         for attr, value in kwargs.items():
             setattr(instance, attr, value)
@@ -84,7 +82,10 @@ class PartyManager(models.Manager):
 
 
 class Party(models.Model):
-    title = models.CharField(max_length=20, verbose_name='파티 제목')
+    title = models.CharField(
+        max_length=20,
+        verbose_name='파티 제목'
+    )
     slug = models.SlugField(
         max_length=20,
         allow_unicode=True,
@@ -97,7 +98,10 @@ class Party(models.Model):
         related_name='owner',
         verbose_name='파티 주최자'
     )
-    place = models.CharField(max_length=25, verbose_name='파티 장소')
+    place = models.CharField(
+        max_length=25,
+        verbose_name='파티 장소'
+    )
     description = models.TextField(
         null=True,
         blank=True,
@@ -109,23 +113,40 @@ class Party(models.Model):
         db_table='participants',
         verbose_name='파티 참가자'
     )
-    start_time = models.DateTimeField(verbose_name='파티 시작 시간')
+    start_time = models.DateTimeField(
+        verbose_name='파티 시작 시간'
+    )
     current_people = models.PositiveSmallIntegerField(
         default=1,
         verbose_name='현재 참여 인원'
     )
-    max_people = models.PositiveSmallIntegerField(verbose_name='최대 참여 가능 인원')
-
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='생성된 시간')
+    max_people = models.PositiveSmallIntegerField(
+        verbose_name='최대 참여 가능 인원'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='생성된 시간'
+    )
     last_updated = models.DateTimeField(
-        auto_now=True, verbose_name='마지막으로 수정된 시간')
-
-    is_new = models.BooleanField(default=True, verbose_name='최근 개설된 파티인지 여부')
+        auto_now=True,
+        verbose_name='마지막으로 수정된 시간'
+    )
+    is_new = models.BooleanField(
+        default=True,
+        verbose_name='최근 개설된 파티인지 여부'
+    )
     will_start_soon = models.BooleanField(
-        default=False, verbose_name='곧 시작하는 파티인지 여부')
+        default=False,
+        verbose_name='곧 시작하는 파티인지 여부'
+    )
     has_started = models.BooleanField(
-        default=False, verbose_name='이미 시작된 파티인지 여부')
-    can_join = models.BooleanField(default=True, verbose_name='참여 가능한지 여부')
+        default=False,
+        verbose_name='이미 시작된 파티인지 여부'
+    )
+    can_join = models.BooleanField(
+        default=True,
+        verbose_name='참여 가능한지 여부'
+    )
 
     objects = PartyManager()
 
@@ -136,6 +157,29 @@ class Party(models.Model):
 
     def __str__(self):
         return '{} 이(가) 주최한 {}'.format(self.party_owner, self.title)
+
+    def update_party_info(self):
+        today = timezone.localtime()
+
+        if self.current_people >= self.max_people:
+            self.can_join = False
+        else:
+            self.can_join = True
+
+        if (today - self.created_at).days > 1:
+            self.is_new = False
+
+        if (self.start_time - today).days < 0:
+            self.will_start_soon = False
+            self.has_started = True
+            self.can_join = False
+        elif (self.start_time - today).days < 1:
+            self.will_start_soon = True
+        else:
+            self.will_start_soon = False
+            self.has_started = False
+
+        self.save()
 
     def add_participants(self, new_participant):
         if new_participant in self.participants.all():

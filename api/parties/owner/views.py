@@ -36,6 +36,11 @@ class PartyOwnerAPIView(generics.RetrieveUpdateAPIView):
     lookup_field = 'slug'
     permission_classes = [IsPartyOwner]
 
+    def get_object(self):
+        instance = super(PartyOwnerAPIView, self).get_object()
+        instance.update_party_info()
+        return instance
+
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return PartyOwnerSerializer
