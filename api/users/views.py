@@ -77,3 +77,10 @@ class UserAPIViewset(viewsets.ModelViewSet):
         user_data['profile_picture'] = str(user.profile.profile_picture) if user.profile.profile_picture else None
 
         return Response(user_data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(status=status.HTTP_204_NO_CONTENT)
