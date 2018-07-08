@@ -13,6 +13,17 @@ class CommentAPIViewSet(viewsets.ModelViewSet):
     permission_classes = [CommentAPIPermission]
     pagination_class = None
 
+    def get_queryset(self):
+        queryset = super(CommentAPIViewSet, self).get_queryset()
+        for instance in queryset:
+            instance.party.update_party_info()
+        return queryset
+
+    def get_object(self):
+        instance = super(CommentAPIViewSet, self).get_object()
+        instance.party.update_party_info()
+        return instance
+
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return CommentSerializer
