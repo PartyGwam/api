@@ -52,7 +52,7 @@ class Profile(models.Model):
         verbose_name='닉네임'
     )
     profile_picture = models.ImageField(
-        upload_to='assets/images/',
+        upload_to='profile_pictures/',
         null=True,
         default=None,
         verbose_name='프로필 사진',
