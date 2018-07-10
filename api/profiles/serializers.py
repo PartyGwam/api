@@ -9,7 +9,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['uuid', 'user', 'username', 'profile_picture']
+        fields = ['user', 'username', 'profile_picture']
 
 
 class ProfileUsernameSerializer(serializers.ModelSerializer):
@@ -41,7 +41,6 @@ class ProfileUsernamePictureSerializer(serializers.ModelSerializer):
 
         if 'profile_picture' in validated_data:
             profile_picture = validated_data.pop('profile_picture')
-            new_instance = Profile.objects.update_profile_picture(
-                instance, profile_picture)
+            new_instance = Profile.objects.update_profile_picture(instance, profile_picture)
 
         return new_instance

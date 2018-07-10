@@ -47,6 +47,11 @@ class ParticipantsAPIView(generics.CreateAPIView,
     lookup_field = 'slug'
     serializer_class = ParticipantsSerializer
 
+    def get_object(self):
+        instance = super(ParticipantsAPIView, self).get_object()
+        instance.update_party_info()
+        return instance
+
     def _get_party_and_profile(self, request):
         instance = self.get_object()
         profile = Profile.objects.get(

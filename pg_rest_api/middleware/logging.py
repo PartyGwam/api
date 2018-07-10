@@ -35,7 +35,10 @@ class LoggingMiddleware:
             self._log_request_response_info(request)
             self._log_request_header(request)
             if hasattr(request, 'body') and getattr(request, 'body'):
-                self.logger.info('BODY: \n{}'.format(request.body.decode('utf-8')))
+                try:
+                    self.logger.info('BODY: \n{}'.format(request.body.decode('utf-8')))
+                except UnicodeDecodeError:
+                    self.logger.info('BODY: \n{}'.format(request.body))
 
     def process_response(self, request, response):
         if self._should_log(request):

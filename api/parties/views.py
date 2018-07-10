@@ -28,6 +28,17 @@ class PartyAPIViewSet(viewsets.ModelViewSet):
         'PATCH': PartyUpdateSerializer,
     }
 
+    def get_queryset(self):
+        queryset = super(PartyAPIViewSet, self).get_queryset()
+        for instance in queryset:
+            instance.update_party_info()
+        return queryset
+
+    def get_object(self):
+        instance = super(PartyAPIViewSet, self).get_object()
+        instance.update_party_info()
+        return instance
+
     def get_serializer_class(self):
         return self.SERIALIZERS[self.request.method]
 
@@ -42,8 +53,7 @@ class PartyAPIViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(
-            instance, data=request.data, partial=True)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
