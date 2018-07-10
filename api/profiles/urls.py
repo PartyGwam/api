@@ -6,5 +6,5 @@ app_name = 'profiles'
 
 urlpatterns = [
     path('', ProfileListAPIView.as_view()),
-    path('<uuid:pk>/', ProfileDetailAPIView.as_view())
+    path('<str:username>/', ProfileDetailAPIView.as_view())
 ]

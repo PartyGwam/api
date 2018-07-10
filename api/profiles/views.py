@@ -10,6 +10,7 @@ from apps.profiles.models import Profile
 class ProfileListAPIView(generics.ListAPIView):
     queryset = Profile.objects.filter(is_active=True)
     serializer_class = ProfileSerializer
+    lookup_field = 'username'
 
 
 class ProfileDetailAPIView(generics.CreateAPIView, generics.RetrieveAPIView):
@@ -18,6 +19,7 @@ class ProfileDetailAPIView(generics.CreateAPIView, generics.RetrieveAPIView):
         'POST': ProfileUsernamePictureSerializer,
     }
     parser_classes = [JSONParser, MultiPartParser, FormParser]
+    lookup_field = 'username'
 
     queryset = Profile.objects.filter(is_active=True)
     permission_classes = [ProfileAPIPermission]
