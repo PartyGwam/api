@@ -33,16 +33,10 @@ class ProfileManager(models.Manager):
 
 
 class Profile(models.Model):
-    uuid = models.UUIDField(
-        primary_key=True,
-        unique=True,
-        editable=False,
-        default=uuid.uuid4,
-        verbose_name='프로필 pk'
-    )
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
+        primary_key=True,
         editable=False,
         verbose_name='해당 프로필의 유저'
     )
