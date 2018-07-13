@@ -1,6 +1,8 @@
 import django_heroku
 import dj_database_url
 
+HOST = 'https://partygwam-staging.herokuapp.com'
+
 DEBUG = True
 ALLOWED_HOSTS = [
     'herokuapp.com',
