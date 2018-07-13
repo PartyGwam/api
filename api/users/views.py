@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import generics, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
@@ -38,7 +39,11 @@ class LoginAPIView(generics.GenericAPIView):
         User.objects.reactivate_user(user)
         token, created = Token.objects.get_or_create(user=user)
 
-        profile_picture = str(user.profile.profile_picture) if user.profile.profile_picture else None
+        if user.profile.profile_picture:
+            profile_picture = '{}{}{}'.format(settings.HOST, settings.MEDIA_URL, user.profile.profile_picture)
+        else:
+            profile_picture = None
+
         data = {
             'token': token.key,
             'uuid': user.uuid,
