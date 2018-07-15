@@ -6,3 +6,4 @@ include =
     **/models.py
 omit =
     **/venv/**
+    **/virtualenv/**
