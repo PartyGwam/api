@@ -1,0 +1,8 @@
+[report]
+include =
+    **/permissions.py
+    **/serializers.py
+    **/views.py
+    **/models.py
+omit =
+    **/venv/**

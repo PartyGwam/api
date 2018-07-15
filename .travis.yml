@@ -1,0 +1,4 @@
+language: python
+python: 3.6.5
+script: coverage run manage.py test tests
+after_script: coveralls
