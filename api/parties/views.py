@@ -1,5 +1,5 @@
 from rest_framework import status, viewsets
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, APIException
 from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
@@ -12,7 +12,7 @@ from apps.parties.models import Party
 
 
 class PartyAPIViewSet(viewsets.ModelViewSet):
-    queryset = Party.objects.all()
+    queryset = Party.objects.filter(has_started=False)
     lookup_field = 'slug'
     pagination_class = PartyAPIPagination
     permission_classes = [PartyAPIPermission]
@@ -48,15 +48,22 @@ class PartyAPIViewSet(viewsets.ModelViewSet):
         try:
             self.perform_create(serializer)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except Exception as e:
+        except ValueError as e:
             raise ValidationError(detail=str(e))
+        except Exception as e:
+            raise APIException(detail=str(e))
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
+        try:
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        except ValueError as e:
+            raise ValidationError(detail=str(e))
+        except Exception as e:
+            raise APIException(detail=str(e))
 
 
 class JoinedPartyAPIView(ListAPIView):

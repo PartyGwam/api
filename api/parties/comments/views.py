@@ -1,5 +1,5 @@
 from rest_framework import status, viewsets
-from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
 from api.parties.comments.permissions import CommentAPIPermission
@@ -8,13 +8,14 @@ from apps.comments.models import Comment
 
 
 class CommentAPIViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
+    queryset = Comment.objects.filter(is_active=True)
     lookup_field = 'slug'
     permission_classes = [CommentAPIPermission]
     pagination_class = None
 
     def get_queryset(self):
-        queryset = super(CommentAPIViewSet, self).get_queryset()
+        slug = self.request.path_info.split('/')[3]
+        queryset = Comment.objects.filter(party__slug=slug)
         for instance in queryset:
             instance.party.update_party_info()
         return queryset
@@ -33,10 +34,13 @@ class CommentAPIViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        try:
-            self.perform_create(serializer)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except ValueError as e:
-            raise ValidationError(detail=str(e))
-        except AssertionError as e:
-            raise PermissionDenied(detail=str(e))
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        if not serializer.data:
+            raise NotFound('파티에 댓글이 없습니다.')
+        else:
+            return Response(serializer.data)

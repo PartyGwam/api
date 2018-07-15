@@ -47,6 +47,7 @@ class UserManager(BaseUserManager):
         if user.is_active:
             user.is_active = False
             user.profile.is_active = False
+            user.profile.is_receiving_notification = False
             user.save()
             user.profile.save()
 
@@ -55,6 +56,7 @@ class UserManager(BaseUserManager):
         if not user.is_active:
             user.is_active = True
             user.profile.is_active = True
+            user.profile.is_receiving_notification = True
             user.save()
             user.profile.save()
 
@@ -74,8 +76,7 @@ class User(AbstractBaseUser):
         verbose_name='닉네임'
     )
     date_joined = models.DateTimeField(auto_now_add=True, verbose_name='가입일')
-    last_logged_in = models.DateTimeField(
-        auto_now=True, verbose_name='마지막 로그인 날짜')
+    last_logged_in = models.DateTimeField(auto_now=True, verbose_name='마지막 로그인 날짜')
     is_active = models.BooleanField(default=True, verbose_name='활성화 여부')
     is_admin = models.BooleanField(default=False, verbose_name='관리자 여부')
 
@@ -89,9 +90,6 @@ class User(AbstractBaseUser):
         db_table = 'users'
         verbose_name = '유저'
         verbose_name_plural = '유저들'
-
-    def __repr__(self):
-        return '{} : {}'.format(self.username, self.email)
 
     def __str__(self):
         return '{} : {}'.format(self.username, self.email)

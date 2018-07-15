@@ -64,10 +64,8 @@ class PartyManager(models.Manager):
         return instance
 
     def _generate_slug(self, title, owner_name):
-        return slugify(
-            '{} {}'.format(owner_name, title)[:20],
-            allow_unicode=True
-        )
+        slug_string = '{} {} {}'.format(timezone.now(), owner_name, title)
+        return slugify(slug_string, allow_unicode=True)
 
     def pass_party_owner(self, instance, new_owner):
         if new_owner == instance.party_owner:
@@ -82,12 +80,9 @@ class PartyManager(models.Manager):
 
 
 class Party(models.Model):
-    title = models.CharField(
-        max_length=20,
-        verbose_name='파티 제목'
-    )
+    title = models.CharField(max_length=20, verbose_name='파티 제목')
     slug = models.SlugField(
-        max_length=20,
+        max_length=100,
         allow_unicode=True,
         verbose_name='파티 라벨'
     )
@@ -98,10 +93,7 @@ class Party(models.Model):
         related_name='owner',
         verbose_name='파티 주최자'
     )
-    place = models.CharField(
-        max_length=25,
-        verbose_name='파티 장소'
-    )
+    place = models.CharField(max_length=25, verbose_name='파티 장소')
     description = models.TextField(
         null=True,
         blank=True,
@@ -113,40 +105,17 @@ class Party(models.Model):
         db_table='participants',
         verbose_name='파티 참가자'
     )
-    start_time = models.DateTimeField(
-        verbose_name='파티 시작 시간'
-    )
-    current_people = models.PositiveSmallIntegerField(
-        default=1,
-        verbose_name='현재 참여 인원'
-    )
-    max_people = models.PositiveSmallIntegerField(
-        verbose_name='최대 참여 가능 인원'
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='생성된 시간'
-    )
-    last_updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name='마지막으로 수정된 시간'
-    )
-    is_new = models.BooleanField(
-        default=True,
-        verbose_name='최근 개설된 파티인지 여부'
-    )
-    will_start_soon = models.BooleanField(
-        default=False,
-        verbose_name='곧 시작하는 파티인지 여부'
-    )
-    has_started = models.BooleanField(
-        default=False,
-        verbose_name='이미 시작된 파티인지 여부'
-    )
-    can_join = models.BooleanField(
-        default=True,
-        verbose_name='참여 가능한지 여부'
-    )
+    start_time = models.DateTimeField(verbose_name='파티 시작 시간')
+    current_people = models.PositiveSmallIntegerField(default=1, verbose_name='현재 참여 인원')
+    max_people = models.PositiveSmallIntegerField(verbose_name='최대 참여 가능 인원')
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='생성된 시간')
+    last_updated = models.DateTimeField(auto_now=True, verbose_name='마지막으로 수정된 시간')
+
+    is_new = models.BooleanField(default=True, verbose_name='최근 개설된 파티인지 여부')
+    will_start_soon = models.BooleanField(default=False, verbose_name='곧 시작하는 파티인지 여부')
+    has_started = models.BooleanField(default=False, verbose_name='이미 시작된 파티인지 여부')
+    can_join = models.BooleanField(default=True, verbose_name='참여 가능한지 여부')
 
     objects = PartyManager()
 
@@ -183,12 +152,12 @@ class Party(models.Model):
 
     def add_participants(self, new_participant):
         if new_participant in self.participants.all():
-            raise AssertionError('이미 파티에 참여하였습니다.')
+            raise ValueError('이미 파티에 참여하였습니다.')
 
         current_people = self.current_people
         max_people = self.max_people
         if current_people >= max_people:
-            raise AssertionError('파티의 정원이 다 차서 참여할 수 없습니다.')
+            raise ValueError('파티의 정원이 다 차서 참여할 수 없습니다.')
 
         self.participants.add(new_participant)
         self.current_people += 1
@@ -198,10 +167,10 @@ class Party(models.Model):
         self.save()
 
     def remove_participants(self, participant):
-        if participant == self.party_owner:
-            raise AssertionError('파티의 주최자는 파티장을 위임한 후에 참여 취소해야 합니다.')
+        if participant == self.party_owner and self.current_people != 1:
+            raise ValueError('파티의 주최자는 파티장을 위임한 후에 참여 취소해야 합니다.')
         if participant not in self.participants.all():
-            raise AssertionError('파티에 참여하지 않으셨습니다.')
+            raise ValueError('파티에 참여하지 않으셨습니다.')
 
         self.participants.remove(participant)
         self.current_people -= 1
