@@ -41,7 +41,7 @@ class Comment(models.Model):
     )
     text = models.CharField(max_length=150, verbose_name='댓글 내용')
     slug = models.SlugField(
-        max_length=20,
+        max_length=100,
         allow_unicode=True,
         verbose_name='댓글 라벨'
     )

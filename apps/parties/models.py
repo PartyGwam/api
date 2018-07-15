@@ -82,7 +82,7 @@ class PartyManager(models.Manager):
 class Party(models.Model):
     title = models.CharField(max_length=20, verbose_name='파티 제목')
     slug = models.SlugField(
-        max_length=20,
+        max_length=100,
         allow_unicode=True,
         verbose_name='파티 라벨'
     )
