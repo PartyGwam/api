@@ -12,7 +12,7 @@ from apps.parties.models import Party
 
 
 class PartyAPIViewSet(viewsets.ModelViewSet):
-    queryset = Party.objects.all()
+    queryset = Party.objects.filter(has_started=False)
     lookup_field = 'slug'
     pagination_class = PartyAPIPagination
     permission_classes = [PartyAPIPermission]
