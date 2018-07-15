@@ -167,7 +167,7 @@ class Party(models.Model):
         self.save()
 
     def remove_participants(self, participant):
-        if participant == self.party_owner:
+        if participant == self.party_owner and self.current_people != 1:
             raise ValueError('파티의 주최자는 파티장을 위임한 후에 참여 취소해야 합니다.')
         if participant not in self.participants.all():
             raise ValueError('파티에 참여하지 않으셨습니다.')

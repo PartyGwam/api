@@ -4,7 +4,6 @@ from rest_framework.response import Response
 
 from api.parties.participants.serializers import ParticipantsSerializer
 from apps.parties.models import Party
-from apps.profiles.models import Profile
 
 
 class ParticipantsAPIView(generics.CreateAPIView,
@@ -54,9 +53,7 @@ class ParticipantsAPIView(generics.CreateAPIView,
 
     def _get_party_and_profile(self, request):
         instance = self.get_object()
-        profile = Profile.objects.get(
-            user__exact=request.user
-        )
+        profile = request.user.profile
         return instance, profile
 
     def create(self, request, *args, **kwargs):
