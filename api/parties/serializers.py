@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from apps.parties.models import Party
-from api.parties.comments.serializers import CommentSerializer
 from api.profiles.serializers import ProfileUsernamePictureSerializer
 
 
