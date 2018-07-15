@@ -47,6 +47,7 @@ class UserManager(BaseUserManager):
         if user.is_active:
             user.is_active = False
             user.profile.is_active = False
+            user.profile.is_receiving_notification = False
             user.save()
             user.profile.save()
 
@@ -55,6 +56,7 @@ class UserManager(BaseUserManager):
         if not user.is_active:
             user.is_active = True
             user.profile.is_active = True
+            user.profile.is_receiving_notification = True
             user.save()
             user.profile.save()
 
