@@ -11,19 +11,6 @@ from apps.users.models import User
 
 
 class LoginAPIView(generics.GenericAPIView):
-    """
-    로그인 API
-
-    ## `POST` - **로그인**
-
-    ### Required Fields
-    - `email` : 이메일
-    - `password` : 비밀번호
-
-    ### 응답 코드
-    - 200 : 로그인 성공. 응답에 토큰과 같이 반환
-    - 400 : 로그인 실패. 응답에 실패 이유 반환
-    """
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
 
@@ -40,7 +27,11 @@ class LoginAPIView(generics.GenericAPIView):
         token, created = Token.objects.get_or_create(user=user)
 
         if user.profile.profile_picture:
-            profile_picture = '{}{}{}'.format(settings.HOST, settings.MEDIA_URL, user.profile.profile_picture)
+            profile_picture = '{}{}{}'.format(
+                settings.HOST,
+                settings.MEDIA_URL,
+                user.profile.profile_picture
+            )
         else:
             profile_picture = None
 
@@ -79,7 +70,8 @@ class UserAPIViewset(viewsets.ModelViewSet):
         del user_data['password']
         user_data['token'] = token.key
         user_data['uuid'] = user.uuid
-        user_data['profile_picture'] = str(user.profile.profile_picture) if user.profile.profile_picture else None
+        user_data['profile_picture'] = \
+            str(user.profile.profile_picture) if user.profile.profile_picture else None
 
         return Response(user_data, status=status.HTTP_201_CREATED)
 

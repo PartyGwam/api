@@ -1,4 +1,5 @@
 language: python
 python: 3.6.5
+cache: pip
 script: coverage run manage.py test tests
 after_success: coveralls

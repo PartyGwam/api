@@ -15,7 +15,8 @@ class ProfileAPIViewTest(TestCase):
         )
         self.factory = APIRequestFactory()
         self.path = '/api/profiles/'
-        self.view = ProfileAPIViewSet.as_view({'get': 'retrieve', 'post': 'create'})
+        self.view = \
+            ProfileAPIViewSet.as_view({'get': 'retrieve', 'post': 'create'})
 
     def test_create_with_username(self):
         data = {'username': '바뀐 유저'}

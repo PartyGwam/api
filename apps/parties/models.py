@@ -2,6 +2,8 @@ from django.db import models, transaction
 from django.utils import timezone
 from django.utils.text import slugify
 
+from apps.parties.participants.models import Participant
+
 
 class PartyManager(models.Manager):
     @transaction.atomic
@@ -54,7 +56,10 @@ class PartyManager(models.Manager):
 
         if title:
             instance.title = title
-            instance.slug = self._generate_slug(title, instance.party_owner.username)
+            instance.slug = self._generate_slug(
+                title,
+                instance.party_owner.username
+            )
 
         for attr, value in kwargs.items():
             setattr(instance, attr, value)
@@ -76,14 +81,6 @@ class PartyManager(models.Manager):
         instance.slug = self._generate_slug(instance.title, new_owner.username)
         instance.save()
         return instance
-
-
-class Participant(models.Model):
-    party = models.ForeignKey('Party', on_delete=models.CASCADE)
-    profile = models.ForeignKey('profiles.Profile', on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'participants'
 
 
 class Party(models.Model):
@@ -110,19 +107,30 @@ class Party(models.Model):
         'profiles.Profile',
         through=Participant,
         related_name='participants',
-        # db_table='participants',
         verbose_name='파티 참가자',
     )
     start_time = models.DateTimeField(verbose_name='파티 시작 시간')
-    current_people = models.PositiveSmallIntegerField(default=1, verbose_name='현재 참여 인원')
+    current_people = models.PositiveSmallIntegerField(
+        default=1,
+        verbose_name='현재 참여 인원'
+    )
     max_people = models.PositiveSmallIntegerField(verbose_name='최대 참여 가능 인원')
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='생성된 시간')
-    last_updated = models.DateTimeField(auto_now=True, verbose_name='마지막으로 수정된 시간')
+    last_updated = models.DateTimeField(
+        auto_now=True,
+        verbose_name='마지막으로 수정된 시간'
+    )
 
     is_new = models.BooleanField(default=True, verbose_name='최근 개설된 파티인지 여부')
-    will_start_soon = models.BooleanField(default=False, verbose_name='곧 시작하는 파티인지 여부')
-    has_started = models.BooleanField(default=False, verbose_name='이미 시작된 파티인지 여부')
+    will_start_soon = models.BooleanField(
+        default=False,
+        verbose_name='곧 시작하는 파티인지 여부'
+    )
+    has_started = models.BooleanField(
+        default=False,
+        verbose_name='이미 시작된 파티인지 여부'
+    )
     can_join = models.BooleanField(default=True, verbose_name='참여 가능한지 여부')
 
     objects = PartyManager()
@@ -182,7 +190,8 @@ class Party(models.Model):
             raise ValueError('파티의 주최자는 파티장을 위임한 후에 참여 취소해야 합니다.')
 
         try:
-            participant_object = Participant.objects.filter(profile=participant).get(party=self)
+            participant_object = \
+                Participant.objects.filter(profile=participant).get(party=self)
         except Participant.DoesNotExist:
             raise ValueError('파티에 참여하지 않으셨습니다.')
 

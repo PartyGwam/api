@@ -26,7 +26,11 @@ class ProfileAPIViewSet(mixins.CreateModelMixin,
 
     def create(self, request, *args, **kwargs):
         instance = request.user.profile
-        serializer = self.get_serializer(instance=instance, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            instance=instance,
+            data=request.data,
+            partial=True
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
