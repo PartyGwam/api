@@ -24,8 +24,7 @@ class PartyManager(models.Manager):
             **kwargs
         )
         instance.save(using=self._db)
-        instance.participants.add(owner)
-        instance.save(using=self._db)
+        Participant.objects.create(party=instance, profile=owner)
 
         return instance
 
@@ -79,6 +78,14 @@ class PartyManager(models.Manager):
         return instance
 
 
+class Participant(models.Model):
+    party = models.ForeignKey('Party', on_delete=models.CASCADE)
+    profile = models.ForeignKey('profiles.Profile', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'participants'
+
+
 class Party(models.Model):
     title = models.CharField(max_length=20, verbose_name='파티 제목')
     slug = models.SlugField(
@@ -101,9 +108,10 @@ class Party(models.Model):
     )
     participants = models.ManyToManyField(
         'profiles.Profile',
+        through=Participant,
         related_name='participants',
-        db_table='participants',
-        verbose_name='파티 참가자'
+        # db_table='participants',
+        verbose_name='파티 참가자',
     )
     start_time = models.DateTimeField(verbose_name='파티 시작 시간')
     current_people = models.PositiveSmallIntegerField(default=1, verbose_name='현재 참여 인원')
@@ -159,7 +167,10 @@ class Party(models.Model):
         if current_people >= max_people:
             raise ValueError('파티의 정원이 다 차서 참여할 수 없습니다.')
 
-        self.participants.add(new_participant)
+        Participant.objects.create(
+            party=self,
+            profile=new_participant
+        )
         self.current_people += 1
         if current_people == max_people:
             self.can_join = False
@@ -169,10 +180,13 @@ class Party(models.Model):
     def remove_participants(self, participant):
         if participant == self.party_owner and self.current_people != 1:
             raise ValueError('파티의 주최자는 파티장을 위임한 후에 참여 취소해야 합니다.')
-        if participant not in self.participants.all():
+
+        try:
+            participant_object = Participant.objects.filter(profile=participant).get(party=self)
+        except Participant.DoesNotExist:
             raise ValueError('파티에 참여하지 않으셨습니다.')
 
-        self.participants.remove(participant)
+        participant_object.delete()
         self.current_people -= 1
         self.can_join = True
         self.save()
