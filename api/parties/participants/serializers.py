@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import serializers
 
 from api.profiles.serializers import ProfileUsernamePictureSerializer
@@ -11,9 +12,17 @@ class ParticipantsSerializer(serializers.ModelSerializer):
         model = Party
         fields = ['title', 'current_people', 'participants']
 
+    def _set_profile_picture_url(self, data):
+        for datum in data:
+            datum['profile_picture'] = \
+                '{}{}'.format(settings.HOST, datum['profile_picture'])
+            return data
+
     def get_participants(self, instance):
         participants = [
             participant.profile for participant in
             Participant.objects.filter(party=instance).order_by('id')
         ]
-        return ProfileUsernamePictureSerializer(participants, many=True).data
+        data = ProfileUsernamePictureSerializer(participants, many=True).data
+        self._set_profile_picture_url(data)
+        return data
