@@ -20,8 +20,17 @@ class UserModelTest(TestCase):
         self.assertEqual(user.profile.username, self.username)
 
     def test_create_user_without_email(self):
-        self.assertRaises(ValueError, lambda: User.objects.create_user(email=None, password=self.password))
-        self.assertRaises(TypeError, lambda: User.objects.create_user(password=self.password))
+        self.assertRaises(
+            ValueError,
+            lambda: User.objects.create_user(
+                email=None,
+                password=self.password
+            )
+        )
+        self.assertRaises(
+            TypeError,
+            lambda: User.objects.create_user(password=self.password)
+        )
 
     def test_create_superuser(self):
         user = User.objects.create_superuser(

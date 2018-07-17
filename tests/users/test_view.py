@@ -67,7 +67,11 @@ class UserAPIViewSetTest(BaseUserAPIViewTest):
         return response
 
     def test_create_successful(self):
-        response = self._send_create_request('sample@gmail.com', '샘플 유저', 'samplepassword')
+        response = self._send_create_request(
+            'sample@gmail.com',
+            '샘플 유저',
+            'samplepassword'
+        )
         self.assertEqual(response.status_code, 201)
         profile = User.objects.get(email='sample@gmail.com').profile
         self.assertIsNotNone(profile)

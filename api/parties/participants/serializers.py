@@ -12,6 +12,8 @@ class ParticipantsSerializer(serializers.ModelSerializer):
         fields = ['title', 'current_people', 'participants']
 
     def get_participants(self, instance):
-        participants = [participant.profile
-                        for participant in Participant.objects.filter(party=instance).order_by('id')]
+        participants = [
+            participant.profile for participant in
+            Participant.objects.filter(party=instance).order_by('id')
+        ]
         return ProfileUsernamePictureSerializer(participants, many=True).data

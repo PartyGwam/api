@@ -39,7 +39,8 @@ class PartyAPIViewTest(TestCase):
         }
 
         self.factory = APIRequestFactory()
-        self.party_view = PartyAPIViewSet.as_view({'post': 'create', 'put': 'update'})
+        self.party_view = \
+            PartyAPIViewSet.as_view({'post': 'create', 'put': 'update'})
         self.created_view = CreatedPartyAPIView.as_view()
         self.joined_view = JoinedPartyAPIView.as_view()
 

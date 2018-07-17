@@ -14,7 +14,10 @@ class ProfileModelTest(TestCase):
         )
 
     def test_create_profile(self):
-        profile = Profile.objects.create_profile(user=self.user, username=self.user.username)
+        profile = Profile.objects.create_profile(
+            user=self.user,
+            username=self.user.username
+        )
         self.assertIsNotNone(self.user.profile)
         self.assertEqual(self.user.username, self.user.profile.username)
         self.assertEqual(str(profile), '{} 의 프로필'.format(self.user))
@@ -26,11 +29,21 @@ class ProfileModelTest(TestCase):
         )
 
     def test_create_profile_without_username(self):
-        self.assertRaises(TypeError, lambda: Profile.objects.create_profile(self.user))
-        self.assertRaises(ValueError, lambda: Profile.objects.create_profile(self.user, None))
+        self.assertRaises(
+            TypeError,
+            lambda: Profile.objects.create_profile(self.user)
+        )
+        self.assertRaises(
+            ValueError,
+            lambda: Profile.objects.create_profile(self.user, None)
+        )
 
     def test_update_username(self):
-        user = User.objects.create_user('test@gmail.com', 'test', username='test')
+        user = User.objects.create_user(
+            email='test@gmail.com',
+            password='test',
+            username='test'
+        )
         Profile.objects.update_username(user.profile, 'new_username')
         self.assertEqual(user.username, user.profile.username)
         self.assertEqual(user.username, 'new_username')
