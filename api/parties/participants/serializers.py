@@ -14,9 +14,10 @@ class ParticipantsSerializer(serializers.ModelSerializer):
 
     def _set_profile_picture_url(self, data):
         for datum in data:
-            datum['profile_picture'] = \
-                '{}{}'.format(settings.HOST, datum['profile_picture'])
-            return data
+            if datum['profile_picture']:
+                datum['profile_picture'] = \
+                    '{}{}'.format(settings.HOST, datum['profile_picture'])
+        return data
 
     def get_participants(self, instance):
         participants = [
