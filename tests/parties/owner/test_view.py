@@ -92,4 +92,3 @@ class ParticipantAPIViewTest(TestCase):
         response = self.view(request, slug=slug)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-

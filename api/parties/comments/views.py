@@ -14,7 +14,7 @@ class CommentAPIViewSet(viewsets.ModelViewSet):
     pagination_class = None
 
     def get_queryset(self):
-        slug = self.request.path_info.split('/')[3]
+        slug = self.kwargs['slug']
         queryset = Comment.objects.filter(party__slug=slug)
         for instance in queryset:
             instance.party.update_party_info()
@@ -30,12 +30,6 @@ class CommentAPIViewSet(viewsets.ModelViewSet):
             return CommentSerializer
         else:
             return CommentWriteSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

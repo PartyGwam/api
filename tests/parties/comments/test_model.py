@@ -38,8 +38,10 @@ class CommentModelTest(TestCase):
         self.assertTrue('샘플-유저-2-댓글' in comment.slug)
         self.assertEqual(self.party.comment_set.count(), 1)
         self.assertTrue(comment in self.party.comment_set.all())
-        self.assertEqual(str(comment),
-                         '{} 에 {} 이 남긴 댓글: {}'.format(self.party, comment.author, '댓글'))
+        self.assertEqual(
+            str(comment),
+            '{} 에 {} 이 남긴 댓글: {}'.format(self.party, comment.author, '댓글')
+        )
 
     def test_create_comment_without_party(self):
         self.assertRaises(

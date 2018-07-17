@@ -57,7 +57,10 @@ class Profile(models.Model):
         default=None,
         verbose_name='프로필 사진',
     )
-    is_receiving_notification = models.BooleanField(default=True, verbose_name='푸시 알림 받는지 여부')
+    is_receiving_notification = models.BooleanField(
+        default=True,
+        verbose_name='푸시 알림 받는지 여부'
+    )
     is_active = models.BooleanField(default=True, verbose_name='활성화 여부')
 
     objects = ProfileManager()

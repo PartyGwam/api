@@ -33,7 +33,10 @@ class PartyModelTest(TestCase):
             start_time=self.today + datetime.timedelta(days=10),
             max_people=4
         )
-        self.assertEqual(str(party), '{} 이(가) 주최한 {}'.format(self.user.profile, '새로운 파티 제목'))
+        self.assertEqual(
+            str(party),
+            '{} 이(가) 주최한 {}'.format(self.user.profile, '새로운 파티 제목')
+        )
         self.assertIs(party.party_owner, self.user.profile)
         self.assertEqual(party.current_people, 1)
         self.assertTrue('샘플-유저-1-새로운-파티-제목' in party.slug)
@@ -119,7 +122,10 @@ class PartyModelTest(TestCase):
             instance=self.party,
             start_time=self.today + datetime.timedelta(days=15),
         )
-        self.assertEqual(party.start_time, self.today + datetime.timedelta(days=15))
+        self.assertEqual(
+            party.start_time,
+            self.today + datetime.timedelta(days=15)
+        )
 
     def test_update_party_with_max_people(self):
         party = Party.objects.update_party(
@@ -229,7 +235,9 @@ class PartyModelTest(TestCase):
 
         self.assertEqual(self.party.participants.count(), 1)
         self.assertEqual(self.party.current_people, 1)
-        self.assertTrue(another_user.profile not in self.party.participants.all())
+        self.assertTrue(
+            another_user.profile not in self.party.participants.all()
+        )
 
     def test_remove_participant_whom_is_party_owner(self):
         another_user = User.objects.create_user(
@@ -262,13 +270,19 @@ class PartyModelTest(TestCase):
             username='다른 유저 1'
         )
         self.party.add_participants(another_user.profile)
-        party = Party.objects.pass_party_owner(self.party, another_user.profile)
+        party = Party.objects.pass_party_owner(
+            self.party,
+            another_user.profile
+        )
         self.assertEqual(party.party_owner, another_user.profile)
 
     def test_pass_party_owner_to_myself(self):
         self.assertRaises(
             ValueError,
-            lambda: Party.objects.pass_party_owner(self.party, self.user.profile)
+            lambda: Party.objects.pass_party_owner(
+                self.party,
+                self.user.profile
+            )
         )
 
     def test_pass_party_owner_to_whom_did_not_participate(self):
@@ -279,5 +293,8 @@ class PartyModelTest(TestCase):
         )
         self.assertRaises(
             ValueError,
-            lambda: Party.objects.pass_party_owner(self.party, another_user.profile)
+            lambda: Party.objects.pass_party_owner(
+                self.party,
+                another_user.profile
+            )
         )
