@@ -5,5 +5,5 @@ class IsPartyOwner(permissions.IsAuthenticated):
     def has_object_permission(self, request, view, obj):
         if request.method == 'GET':
             return True
-
-        return request.user.profile == obj.party_owner
+        else:
+            return request.user.profile == obj.party_owner

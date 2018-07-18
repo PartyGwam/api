@@ -1,6 +1,6 @@
 from rest_framework import status, viewsets
 from rest_framework.exceptions import ValidationError, APIException
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 
@@ -13,7 +13,7 @@ from apps.parties.models import Party
 
 class PartyAPIViewSet(viewsets.ModelViewSet):
     queryset = Party.objects.filter(has_started=False)
-    lookup_field = 'slug'
+    lookup_field = 'party_slug'
     pagination_class = PartyAPIPagination
     permission_classes = [PartyAPIPermission]
 
@@ -35,8 +35,10 @@ class PartyAPIViewSet(viewsets.ModelViewSet):
         return queryset
 
     def get_object(self):
-        instance = super(PartyAPIViewSet, self).get_object()
-        instance.update_party_info()
+        instance = get_object_or_404(
+            self.get_queryset(),
+            slug=self.kwargs['party_slug']
+        )
         return instance
 
     def get_serializer_class(self):

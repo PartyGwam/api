@@ -77,6 +77,6 @@ class PartyAPIViewTest(TestCase):
 
         request = self.factory.put(self.party_path, update_data, 'json')
         force_authenticate(request, self.users[0])
-        response = self.party_view(request, slug=self.parties[0].slug)
+        response = self.party_view(request, party_slug=self.parties[0].slug)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -54,7 +54,7 @@ class CommentAPIViewTest(TestCase):
             path = self._get_request_path(self.parties[i].slug)
             request = self.factory.get(path)
             force_authenticate(request, self.users[i])
-            response = self.view(request, slug=self.parties[i].slug)
+            response = self.view(request, party_slug=self.parties[i].slug)
 
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(len(response.data), i + 1)
@@ -63,7 +63,7 @@ class CommentAPIViewTest(TestCase):
         path = self._get_request_path(self.parties[4].slug)
         request = self.factory.get(path)
         force_authenticate(request, self.users[4])
-        response = self.view(request, slug=self.parties[4].slug)
+        response = self.view(request, party_slug=self.parties[4].slug)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
