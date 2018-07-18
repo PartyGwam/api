@@ -15,7 +15,8 @@ class CommentAPIViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         slug = self.kwargs['party_slug']
-        queryset = Comment.objects.filter(party__slug=slug)
+        queryset = Comment.objects.filter(
+            party__slug=slug).order_by('created_at')
         for instance in queryset:
             instance.party.update_party_info()
         return queryset
