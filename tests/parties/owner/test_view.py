@@ -49,7 +49,7 @@ class ParticipantAPIViewTest(TestCase):
 
             request = self.factory.get(path)
             force_authenticate(request, self.users[i])
-            response = self.view(request, slug=slug)
+            response = self.view(request, party_slug=slug)
 
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -59,7 +59,7 @@ class ParticipantAPIViewTest(TestCase):
 
         request = self.factory.put(path, {'party_owner': '샘플 유저 1'})
         force_authenticate(request, self.users[1])
-        response = self.view(request, slug=slug)
+        response = self.view(request, party_slug=slug)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -69,7 +69,7 @@ class ParticipantAPIViewTest(TestCase):
 
         request = self.factory.put(path, {'party_owner': '샘플 유저 2'})
         force_authenticate(request, self.users[1])
-        response = self.view(request, slug=slug)
+        response = self.view(request, party_slug=slug)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -79,7 +79,7 @@ class ParticipantAPIViewTest(TestCase):
 
         request = self.factory.put(path, {'party_owner': '샘플 유저 3'})
         force_authenticate(request, self.users[1])
-        response = self.view(request, slug=slug)
+        response = self.view(request, party_slug=slug)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -89,6 +89,6 @@ class ParticipantAPIViewTest(TestCase):
 
         request = self.factory.put(path, {'party_owner': '샘플 유저 2'})
         force_authenticate(request, self.users[2])
-        response = self.view(request, slug=slug)
+        response = self.view(request, party_slug=slug)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

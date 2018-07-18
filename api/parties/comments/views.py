@@ -14,7 +14,7 @@ class CommentAPIViewSet(viewsets.ModelViewSet):
     pagination_class = None
 
     def get_queryset(self):
-        slug = self.kwargs['slug']
+        slug = self.kwargs['party_slug']
         queryset = Comment.objects.filter(party__slug=slug)
         for instance in queryset:
             instance.party.update_party_info()

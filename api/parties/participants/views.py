@@ -14,7 +14,10 @@ class ParticipantsAPIView(generics.CreateAPIView,
     serializer_class = ParticipantsSerializer
 
     def get_object(self):
-        instance = super(ParticipantsAPIView, self).get_object()
+        instance = generics.get_object_or_404(
+            self.get_queryset(),
+            slug=self.kwargs['party_slug']
+        )
         instance.update_party_info()
         return instance
 
