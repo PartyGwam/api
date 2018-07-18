@@ -14,7 +14,10 @@ class PartyOwnerAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsPartyOwner]
 
     def get_object(self):
-        instance = super(PartyOwnerAPIView, self).get_object()
+        instance = generics.get_object_or_404(
+            self.get_queryset(),
+            slug=self.kwargs['party_slug']
+        )
         instance.update_party_info()
         return instance
 

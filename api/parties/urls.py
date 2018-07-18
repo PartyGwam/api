@@ -7,15 +7,15 @@ app_name = 'parties'
 
 urlpatterns = [
     path(
-        '<str:slug>/participants/',
+        '<str:party_slug>/participants/',
         include('api.parties.participants.urls', namespace='participants')
     ),
     path(
-        '<str:slug>/owner/',
+        '<str:party_slug>/owner/',
         include('api.parties.owner.urls', namespace='owner')
     ),
     path(
-        '<str:slug>/comments/',
+        '<str:party_slug>/comments/',
         include('api.parties.comments.urls', namespace='comments')
     ),
     path('created/', CreatedPartyAPIView.as_view()),
