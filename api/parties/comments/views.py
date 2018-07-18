@@ -31,6 +31,15 @@ class CommentAPIViewSet(viewsets.ModelViewSet):
         else:
             return CommentWriteSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        new_comment = serializer.save()
+        return Response(
+            CommentSerializer(new_comment).data,
+            status=status.HTTP_201_CREATED
+        )
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
