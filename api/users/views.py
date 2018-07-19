@@ -24,6 +24,7 @@ class LoginAPIView(generics.GenericAPIView):
         )
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
+        user.update_fcm_token(serializer.validated_data['fcm_token'])
         User.objects.reactivate_user(user)
         token, created = Token.objects.get_or_create(user=user)
 

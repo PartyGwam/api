@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from api.parties.participants.serializers import ParticipantsSerializer
 from apps.parties.models import Party
 
+from api.utils import send_push_to_single_user
+
 
 class ParticipantsAPIView(generics.CreateAPIView,
                           generics.RetrieveDestroyAPIView):
@@ -31,6 +33,14 @@ class ParticipantsAPIView(generics.CreateAPIView,
         serializer = self.get_serializer(instance, partial=True)
         try:
             instance.add_participants(new_participant=profile)
+            fcm_token = instance.party_owner.user.fcm_token
+            send_push_to_single_user(
+                fcm_token,
+                '[파티에 누군가 참여함]',
+                '[{}] 에 새 멤버가 참여했습니다.'.format(
+                    instance.title
+                )
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             raise ValidationError(detail=str(e))
