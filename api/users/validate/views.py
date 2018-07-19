@@ -2,7 +2,8 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from api.users.validate.serializers import UserEmailSerializer, UserUsernameSerializer
+from api.users.validate.serializers import \
+    UserEmailSerializer, UserUsernameSerializer
 
 
 class EmailValidateAPIView(generics.GenericAPIView):

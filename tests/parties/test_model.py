@@ -114,7 +114,6 @@ class PartyModelTest(TestCase):
             title='바뀐 제목',
             description='바뀐 설명'
         )
-        self.assertTrue('샘플-유저-1-바뀐-제목' in party.slug)
         self.assertEqual(party.description, '바뀐 설명')
 
     def test_update_party_with_start_time(self):
@@ -186,15 +185,6 @@ class PartyModelTest(TestCase):
                 instance=None,
                 title='바뀐 제목',
                 description='바뀐 설명'
-            )
-        )
-
-    def test_update_party_with_slug(self):
-        self.assertRaises(
-            ValueError,
-            lambda: Party.objects.update_party(
-                instance=self.party,
-                slug='이러쿵 저러쿵'
             )
         )
 

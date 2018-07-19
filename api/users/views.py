@@ -6,7 +6,8 @@ from rest_framework.response import Response
 
 from api.users.permissions import UserAPIPermission
 from api.users.serializers import \
-    LoginSerializer, UserSerializer, UserCreateSerializer, UserPasswordSerializer
+    LoginSerializer, UserSerializer, \
+    UserCreateSerializer, UserPasswordSerializer
 from apps.users.models import User
 
 
@@ -70,8 +71,10 @@ class UserAPIViewset(viewsets.ModelViewSet):
         del user_data['password']
         user_data['token'] = token.key
         user_data['uuid'] = user.uuid
+
+        profile_picture = user.profile.profile_picture
         user_data['profile_picture'] = \
-            str(user.profile.profile_picture) if user.profile.profile_picture else None
+            str(profile_picture) if profile_picture else None
 
         return Response(user_data, status=status.HTTP_201_CREATED)
 

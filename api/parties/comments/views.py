@@ -3,7 +3,8 @@ from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
 from api.parties.comments.permissions import CommentAPIPermission
-from api.parties.comments.serializers import CommentSerializer, CommentWriteSerializer
+from api.parties.comments.serializers import \
+    CommentSerializer, CommentWriteSerializer
 from apps.comments.models import Comment
 
 
