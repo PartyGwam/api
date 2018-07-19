@@ -3,7 +3,8 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from rest_framework.response import Response
 
 from api.profiles.permissions import ProfileAPIPermission
-from api.profiles.serializers import ProfileSerializer, ProfileUsernamePictureSerializer
+from api.profiles.serializers import \
+    ProfileSerializer, ProfileUsernamePictureSerializer
 from apps.profiles.models import Profile
 
 

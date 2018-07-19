@@ -96,4 +96,3 @@ class CommentModelTest(TestCase):
         Comment.objects.update_comment(instance=comment, text='바뀐 댓글 내용')
 
         self.assertEqual(comment.text, '바뀐 댓글 내용')
-        self.assertTrue('샘플-유저-2-바뀐-댓글-내용' in comment.slug)

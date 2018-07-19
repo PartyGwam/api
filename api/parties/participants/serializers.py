@@ -12,7 +12,8 @@ class ParticipantsSerializer(serializers.ModelSerializer):
         model = Party
         fields = ['title', 'current_people', 'participants']
 
-    def _set_profile_picture_url(self, data):
+    @staticmethod
+    def _set_profile_picture_url(data):
         for datum in data:
             if datum['profile_picture']:
                 datum['profile_picture'] = \

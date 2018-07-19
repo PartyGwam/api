@@ -3,7 +3,8 @@ from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
 from api.parties.comments.permissions import CommentAPIPermission
-from api.parties.comments.serializers import CommentSerializer, CommentWriteSerializer
+from api.parties.comments.serializers import \
+    CommentSerializer, CommentWriteSerializer
 from apps.comments.models import Comment
 
 
@@ -15,7 +16,8 @@ class CommentAPIViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         slug = self.kwargs['party_slug']
-        queryset = Comment.objects.filter(party__slug=slug)
+        queryset = Comment.objects.filter(
+            party__slug=slug).order_by('created_at')
         for instance in queryset:
             instance.party.update_party_info()
         return queryset
