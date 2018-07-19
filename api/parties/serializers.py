@@ -50,7 +50,6 @@ class PartyUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         return Party.objects.update_party(
             instance,
-            title=validated_data.pop('title', None),
             start_time=validated_data.pop('start_time', None),
             max_people=validated_data.pop('max_people', None),
             **validated_data
