@@ -5,6 +5,7 @@ from apps.users.models import User
 
 
 class LoginSerializer(serializers.Serializer):
+    fcm_token = serializers.CharField(max_length=300)
     email = serializers.EmailField(label='이메일')
     password = serializers.CharField(
         label='비밀번호',

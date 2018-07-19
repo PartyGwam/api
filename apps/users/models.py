@@ -37,9 +37,8 @@ class UserManager(BaseUserManager):
         if not new_password:
             raise ValueError('비밀번호는 필수입니다.')
 
-        instance.password = new_password
         instance.set_password(new_password)
-        instance.save()
+        instance.save(using=self._db)
         return instance
 
     @transaction.atomic
@@ -62,6 +61,11 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+    fcm_token = models.CharField(
+        max_length=300,
+        editable=False,
+        verbose_name='FCM 토큰'
+    )
     uuid = models.UUIDField(
         primary_key=True,
         unique=True,
@@ -106,3 +110,8 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return self.is_active
+
+    def update_fcm_token(self, new_token):
+        if new_token != self.fcm_token:
+            self.fcm_token = new_token
+            self.save()
