@@ -32,8 +32,8 @@ class PartyManager(models.Manager):
 
     @transaction.atomic
     def update_party(self, instance,
-                     title=None, start_time=None,
-                     max_people=None, **kwargs):
+                     start_time=None, max_people=None,
+                     **kwargs):
         if not instance:
             raise ValueError('업데이트 할 모델은 필수입니다.')
 
@@ -51,34 +51,25 @@ class PartyManager(models.Manager):
             if max_people == instance.current_people:
                 instance.can_join = False
 
-        if 'slug' in kwargs:
-            raise ValueError('파티 라벨은 직접 변경 불가하고 제목 변경을 통해서만 가능합니다.')
-
-        if title:
-            instance.title = title
-            instance.slug = self._generate_slug(
-                title,
-                instance.party_owner.username
-            )
-
         for attr, value in kwargs.items():
             setattr(instance, attr, value)
 
         instance.save()
         return instance
 
-    def _generate_slug(self, title, owner_name):
+    @staticmethod
+    def _generate_slug(title, owner_name):
         slug_string = '{} {} {}'.format(timezone.now(), owner_name, title)
         return slugify(slug_string, allow_unicode=True)
 
-    def pass_party_owner(self, instance, new_owner):
+    @staticmethod
+    def pass_party_owner(instance, new_owner):
         if new_owner == instance.party_owner:
             raise ValueError('자기 자신에게 위임할 수 없습니다.')
         if new_owner not in instance.participants.all():
             raise ValueError('파티에 참여해 있지 않은 사람에게 위임할 수 없습니다.')
 
         instance.party_owner = new_owner
-        instance.slug = self._generate_slug(instance.title, new_owner.username)
         instance.save()
         return instance
 

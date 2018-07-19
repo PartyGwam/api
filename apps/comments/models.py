@@ -19,11 +19,11 @@ class CommentManager(models.Manager):
 
     def update_comment(self, instance, text):
         instance.text = text
-        instance.slug = self._generate_slug(text, instance.author.username)
-        instance.save()
+        instance.save(using=self._db)
         return instance
 
-    def _generate_slug(self, text, author):
+    @staticmethod
+    def _generate_slug(text, author):
         slug_string = '{} {} {}'.format(timezone.now(), author, text)
         return slugify(slug_string, allow_unicode=True)
 
@@ -63,4 +63,9 @@ class Comment(models.Model):
         verbose_name_plural = '댓글들'
 
     def __str__(self):
-        return '{} 에 {} 이 남긴 댓글: {}'.format(self.party, self.author, self.text)
+        return \
+            '{} 에 {} 이 남긴 댓글: {}'.format(
+                self.party,
+                self.author,
+                self.text
+            )
