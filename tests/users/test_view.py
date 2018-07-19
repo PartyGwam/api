@@ -24,7 +24,7 @@ class LoginAPIViewTest(BaseUserAPIViewTest):
         self.view = LoginAPIView.as_view()
 
     def _send_login_request(self, email, password):
-        data = {'email': email, 'password': password}
+        data = {'fcm_token': 'token', 'email': email, 'password': password}
         request = self.factory.post(self.LOGIN_URL, data, format='json')
         response = self.view(request)
         return response

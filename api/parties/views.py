@@ -10,6 +10,8 @@ from api.parties.serializers import \
     PartySerializer, PartyCreateSerializer, PartyUpdateSerializer
 from apps.parties.models import Party
 
+from api.utils import send_push_to_multiple_user
+
 
 class PartyAPIViewSet(viewsets.ModelViewSet):
     queryset = Party.objects.all()
@@ -65,6 +67,19 @@ class PartyAPIViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         try:
             self.perform_update(serializer)
+
+            fcm_tokens = [
+                participant.user.fcm_token
+                for participant in instance.participants.all()
+            ]
+            send_push_to_multiple_user(
+                fcm_tokens,
+                '[파티 정보 수정됨]',
+                '[{}] 의 정보가 수정되었습니다.'.format(
+                    instance.title
+                )
+            )
+
             return Response(serializer.data)
         except ValueError as e:
             raise ValidationError(detail=str(e))

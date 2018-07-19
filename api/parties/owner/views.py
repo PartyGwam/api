@@ -7,6 +7,8 @@ from api.parties.owner.serializers import \
     PartyOwnerSerializer, PartyOwnerPassSerializer
 from apps.parties.models import Party
 
+from api.utils import send_push_to_single_user
+
 
 class PartyOwnerAPIView(generics.RetrieveUpdateAPIView):
     queryset = Party.objects.all()
@@ -37,7 +39,15 @@ class PartyOwnerAPIView(generics.RetrieveUpdateAPIView):
         serializer.is_valid(raise_exception=True)
 
         try:
-            self.perform_update(serializer)
+            instance = serializer.save()
+            fcm_token = instance.party_owner.user.fcm_token
+            send_push_to_single_user(
+                fcm_token,
+                '[방장 위임됨]',
+                '[{}] 의 방장을 위임받았습니다.'.format(
+                    instance.title
+                )
+            )
             return Response(PartyOwnerSerializer(instance).data)
         except Exception as e:
             raise ValidationError(detail=str(e))
