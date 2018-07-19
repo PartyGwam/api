@@ -14,7 +14,7 @@ def send_push_to_single_user(user, title, body):
 
 
 def send_push_to_multiple_user(users, title, body):
-    if type(users) != 'list':
+    if type(users) is not list:
         raise TypeError('유저 토큰들을 리스트로 제공해 주세요')
 
     return push_service.notify_multiple_devices(
