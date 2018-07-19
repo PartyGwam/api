@@ -1,6 +1,7 @@
 from django.urls import path
 
-from api.users.validate.views import EmailValidateAPIView, UsernameValidateAPIView
+from api.users.validate.views import \
+    EmailValidateAPIView, UsernameValidateAPIView
 
 app_name = 'validate'
 
