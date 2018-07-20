@@ -1,6 +1,6 @@
 from rest_framework.routers import SimpleRouter
 
-from notifications.views import NotificationAPIViewSet
+from api.notifications.views import NotificationAPIViewSet
 
 router = SimpleRouter()
 router.register(
