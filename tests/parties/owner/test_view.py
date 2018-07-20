@@ -91,4 +91,4 @@ class ParticipantAPIViewTest(TestCase):
         force_authenticate(request, self.users[2])
         response = self.view(request, party_slug=slug)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

@@ -20,7 +20,7 @@ class CommentWriteSerializer(serializers.ModelSerializer):
         fields = ['text']
 
     def validate(self, attrs):
-        slug = self.context['request'].path_info.split('/')[3]
+        slug = self.context['view'].kwargs['party_slug']
         party = Party.objects.get(slug=slug)
         author = self.context['request'].user.profile
 

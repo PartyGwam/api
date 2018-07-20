@@ -9,22 +9,21 @@ from apps.comments.models import Comment
 
 
 class CommentAPIViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.filter(is_active=True)
     lookup_field = 'slug'
     permission_classes = [CommentAPIPermission]
     pagination_class = None
 
     def get_queryset(self):
         slug = self.kwargs['party_slug']
-        queryset = Comment.objects.filter(
-            party__slug=slug).order_by('created_at')
+        queryset = Comment.objects.filter(party__slug=slug)
         for instance in queryset:
             instance.party.update_party_info()
-        return queryset
+        return queryset.order_by('created_at')
 
     def get_object(self):
         instance = super(CommentAPIViewSet, self).get_object()
         instance.party.update_party_info()
+        self.check_object_permissions(self.request, instance)
         return instance
 
     def get_serializer_class(self):

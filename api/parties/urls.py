@@ -22,6 +22,6 @@ urlpatterns = [
 ]
 
 router = routers.SimpleRouter()
-router.register('', PartyAPIViewSet)
+router.register('', PartyAPIViewSet, base_name='party')
 
 urlpatterns += router.urls

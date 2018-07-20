@@ -1,16 +1,16 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from api.users.views import LoginAPIView
-from api.users.views import UserAPIViewset
+from api.users.login.views import LoginAPIView
+from api.users.views import UserAPIViewSet
 
 router = routers.SimpleRouter()
-router.register('', UserAPIViewset)
+router.register('', UserAPIViewSet)
 
 urlpatterns = [
     path('login/', LoginAPIView.as_view()),
-    path('validate/', include('api.users.validate.urls', namespace='validate')),
-    path('forgot/', include('api.users.forgot.urls', namespace='forgot')),
+    path('validate/', include('api.users.validate.urls')),
+    path('forgot/', include('api.users.forgot.urls')),
 ]
 
 urlpatterns += router.urls

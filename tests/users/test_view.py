@@ -2,7 +2,8 @@ import unittest
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-from api.users.views import LoginAPIView, UserAPIViewset
+from api.users.views import UserAPIViewSet
+from api.users.login.views import LoginAPIView
 from apps.users.models import User
 
 
@@ -50,7 +51,7 @@ class LoginAPIViewTest(BaseUserAPIViewTest):
 class UserAPIViewSetTest(BaseUserAPIViewTest):
     def setUp(self):
         super(UserAPIViewSetTest, self).setUp()
-        self.view = UserAPIViewset.as_view({'post': 'create', 'put': 'update'})
+        self.view = UserAPIViewSet.as_view({'post': 'create', 'put': 'update'})
 
     def _send_create_request(self, email, username, password):
         data = {
