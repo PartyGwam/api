@@ -53,7 +53,12 @@ class UserAPIViewSetTest(BaseUserAPIViewTest):
         self.view = UserAPIViewset.as_view({'post': 'create', 'put': 'update'})
 
     def _send_create_request(self, email, username, password):
-        data = {'email': email, 'username': username, 'password': password}
+        data = {
+            'fcm_token': 'token',
+            'email': email,
+            'username': username,
+            'password': password
+        }
         request = self.factory.post(self.USER_URL, data, format='json')
         response = self.view(request)
         return response
