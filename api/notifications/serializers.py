@@ -8,13 +8,7 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = [
-            'slug',
-            'user',
-            'party',
-            'title',
-            'body'
-        ]
+        exclude = ['id', 'slug', 'user']
 
     def get_party(self, instance):
         return instance.party.slug
