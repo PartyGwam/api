@@ -63,7 +63,6 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     fcm_token = models.CharField(
         max_length=300,
-        editable=False,
         verbose_name='FCM 토큰'
     )
     uuid = models.UUIDField(
