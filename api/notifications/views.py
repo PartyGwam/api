@@ -13,4 +13,5 @@ class NotificationAPIViewSet(mixins.ListModelMixin,
     lookup_field = 'slug'
 
     def get_queryset(self):
-        return Notification.objects.filter(user=self.request.user.profile)
+        user = self.request.user.profile
+        return Notification.objects.filter(user=user).order_by('-created_at')
