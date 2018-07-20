@@ -1,54 +1,14 @@
-from django.conf import settings
-from rest_framework import generics, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from api.users.permissions import UserAPIPermission
 from api.users.serializers import \
-    LoginSerializer, UserSerializer, \
-    UserCreateSerializer, UserPasswordSerializer
+    UserSerializer, UserCreateSerializer, UserPasswordSerializer
 from apps.users.models import User
 
 
-class LoginAPIView(generics.GenericAPIView):
-    permission_classes = [AllowAny]
-    serializer_class = LoginSerializer
-
-    def post(self, request):
-        serializer = self.get_serializer(
-            data=request.data,
-            context={
-                'request': request
-            }
-        )
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        user.update_fcm_token(serializer.validated_data['fcm_token'])
-        User.objects.reactivate_user(user)
-        token, created = Token.objects.get_or_create(user=user)
-
-        if user.profile.profile_picture:
-            profile_picture = '{}{}{}'.format(
-                settings.HOST,
-                settings.MEDIA_URL,
-                user.profile.profile_picture
-            )
-        else:
-            profile_picture = None
-
-        data = {
-            'token': token.key,
-            'uuid': user.uuid,
-            'email': user.email,
-            'username': user.username,
-            'profile_picture': profile_picture
-        }
-
-        return Response(data)
-
-
-class UserAPIViewset(viewsets.ModelViewSet):
+class UserAPIViewSet(viewsets.ModelViewSet):
     SERIALIZERS = {
         "GET": UserSerializer,
         "POST": UserCreateSerializer,

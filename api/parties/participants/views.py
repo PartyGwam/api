@@ -21,6 +21,7 @@ class ParticipantsAPIView(generics.CreateAPIView,
             slug=self.kwargs['party_slug']
         )
         instance.update_party_info()
+        self.check_object_permissions(self.request, instance)
         return instance
 
     def _get_party_and_profile(self, request):
@@ -42,7 +43,7 @@ class ParticipantsAPIView(generics.CreateAPIView,
                 )
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except Exception as e:
+        except ValueError as e:
             raise ValidationError(detail=str(e))
 
     def destroy(self, request, *args, **kwargs):
@@ -50,5 +51,5 @@ class ParticipantsAPIView(generics.CreateAPIView,
         try:
             instance.remove_participants(participant=profile)
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except Exception as e:
+        except ValueError as e:
             raise ValidationError(detail=str(e))

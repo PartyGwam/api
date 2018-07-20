@@ -75,7 +75,7 @@ class CommentAPIViewTest(TestCase):
 
         request = self.factory.post(path, data, 'json')
         force_authenticate(request, user)
-        response = self.view(request)
+        response = self.view(request, party_slug=party.slug)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -87,6 +87,6 @@ class CommentAPIViewTest(TestCase):
 
         request = self.factory.post(path, data, 'json')
         force_authenticate(request, user)
-        response = self.view(request)
+        response = self.view(request, party_slug=party.slug)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

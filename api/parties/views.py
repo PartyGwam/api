@@ -1,5 +1,4 @@
-from rest_framework import status, viewsets
-from rest_framework.exceptions import ValidationError, APIException
+from rest_framework import viewsets
 from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
@@ -14,7 +13,6 @@ from api.utils import send_push_to_multiple_user
 
 
 class PartyAPIViewSet(viewsets.ModelViewSet):
-    queryset = Party.objects.all()
     lookup_field = 'party_slug'
     pagination_class = PartyAPIPagination
     permission_classes = [PartyAPIPermission]
@@ -31,7 +29,7 @@ class PartyAPIViewSet(viewsets.ModelViewSet):
     }
 
     def get_queryset(self):
-        queryset = super(PartyAPIViewSet, self).get_queryset()
+        queryset = Party.objects.all()
         for instance in queryset:
             instance.update_party_info()
         return queryset
@@ -41,21 +39,11 @@ class PartyAPIViewSet(viewsets.ModelViewSet):
             self.get_queryset(),
             slug=self.kwargs['party_slug']
         )
+        self.check_object_permissions(self.request, instance)
         return instance
 
     def get_serializer_class(self):
         return self.SERIALIZERS[self.request.method]
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        try:
-            self.perform_create(serializer)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except ValueError as e:
-            raise ValidationError(detail=str(e))
-        except Exception as e:
-            raise APIException(detail=str(e))
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -65,23 +53,16 @@ class PartyAPIViewSet(viewsets.ModelViewSet):
             partial=True
         )
         serializer.is_valid(raise_exception=True)
-        try:
-            self.perform_update(serializer)
-
-            send_push_to_multiple_user(
-                [participant for participant in instance.participants.all()],
-                instance,
-                '[파티 정보 수정됨]',
-                '[{}] 의 정보가 수정되었습니다.'.format(
-                    instance.title
-                )
+        self.perform_update(serializer)
+        send_push_to_multiple_user(
+            [participant for participant in instance.participants.all()],
+            instance,
+            '[파티 정보 수정됨]',
+            '[{}] 의 정보가 수정되었습니다.'.format(
+                instance.title
             )
-
-            return Response(serializer.data)
-        except ValueError as e:
-            raise ValidationError(detail=str(e))
-        except Exception as e:
-            raise APIException(detail=str(e))
+        )
+        return Response(serializer.data)
 
 
 class JoinedPartyAPIView(ListAPIView):

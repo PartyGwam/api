@@ -4,6 +4,7 @@ include =
     **/serializers.py
     **/views.py
     **/models.py
+    api/utils.py
 omit =
     **/venv/**
     **/virtualenv/**

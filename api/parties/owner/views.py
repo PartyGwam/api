@@ -21,6 +21,7 @@ class PartyOwnerAPIView(generics.RetrieveUpdateAPIView):
             slug=self.kwargs['party_slug']
         )
         instance.update_party_info()
+        self.check_object_permissions(self.request, instance)
         return instance
 
     def get_serializer_class(self):
@@ -49,5 +50,5 @@ class PartyOwnerAPIView(generics.RetrieveUpdateAPIView):
                 )
             )
             return Response(PartyOwnerSerializer(instance).data)
-        except Exception as e:
+        except ValueError as e:
             raise ValidationError(detail=str(e))

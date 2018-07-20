@@ -1,4 +1,4 @@
-from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
 from rest_framework import serializers
 
 from api.profiles.serializers import ProfileUsernamePictureSerializer
@@ -12,12 +12,13 @@ class ParticipantsSerializer(serializers.ModelSerializer):
         model = Party
         fields = ['title', 'current_people', 'participants']
 
-    @staticmethod
-    def _set_profile_picture_url(data):
+    def _set_profile_picture_url(self, data):
+        domain = get_current_site(self.context['request'])
         for datum in data:
             if datum['profile_picture']:
+                pass
                 datum['profile_picture'] = \
-                    '{}{}'.format(settings.HOST, datum['profile_picture'])
+                    'http://{}{}'.format(domain, datum['profile_picture'])
         return data
 
     def get_participants(self, instance):
