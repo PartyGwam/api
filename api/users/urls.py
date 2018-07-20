@@ -4,8 +4,6 @@ from rest_framework import routers
 from api.users.views import LoginAPIView
 from api.users.views import UserAPIViewset
 
-app_name = 'users'
-
 router = routers.SimpleRouter()
 router.register('', UserAPIViewset)
 

@@ -39,13 +39,13 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ['password', 'last_login']
+        exclude = ['fcm_token', 'password', 'last_login']
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'username', 'password']
+        fields = ['fcm_token', 'email', 'username', 'password']
 
     def create(self, validated_data):
         model_class = self.Meta.model

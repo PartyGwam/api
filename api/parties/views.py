@@ -68,12 +68,9 @@ class PartyAPIViewSet(viewsets.ModelViewSet):
         try:
             self.perform_update(serializer)
 
-            fcm_tokens = [
-                participant.user.fcm_token
-                for participant in instance.participants.all()
-            ]
             send_push_to_multiple_user(
-                fcm_tokens,
+                [participant for participant in instance.participants.all()],
+                instance,
                 '[파티 정보 수정됨]',
                 '[{}] 의 정보가 수정되었습니다.'.format(
                     instance.title

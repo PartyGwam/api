@@ -33,9 +33,9 @@ class ParticipantsAPIView(generics.CreateAPIView,
         serializer = self.get_serializer(instance, partial=True)
         try:
             instance.add_participants(new_participant=profile)
-            fcm_token = instance.party_owner.user.fcm_token
             send_push_to_single_user(
-                fcm_token,
+                instance.party_owner,
+                instance,
                 '[파티에 누군가 참여함]',
                 '[{}] 에 새 멤버가 참여했습니다.'.format(
                     instance.title

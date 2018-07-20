@@ -40,9 +40,9 @@ class PartyOwnerAPIView(generics.RetrieveUpdateAPIView):
 
         try:
             instance = serializer.save()
-            fcm_token = instance.party_owner.user.fcm_token
             send_push_to_single_user(
-                fcm_token,
+                instance.party_owner,
+                instance,
                 '[방장 위임됨]',
                 '[{}] 의 방장을 위임받았습니다.'.format(
                     instance.title
